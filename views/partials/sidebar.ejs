@@ -1,0 +1,39 @@
+<div class="menu-list">
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <a class="d-xl-none d-lg-none" href="#">Dashboard</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav flex-column">
+                    <li class="nav-divider">
+                        Menu
+                    </li>
+                    <li class="nav-item ">
+                        <a class="<%= getLinkActive('dashboard',linkTarget) %>" href="/app/dashboard"><i class="fa fa-fw fa-play"></i>Dashboard</a>
+                    </li>
+                     <li class="nav-item ">
+                        <a class="<%= getLinkActive('account',linkTarget) %>" href="/app/account"><i class="fa fa-fw fa-user-circle"></i>Account</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="<%= getLinkActive('post',linkTarget) %>" href="/app/post" ><i class="fa fa-fw fa-rocket"></i>Post</a>
+                    </li>                    
+                    <li class="nav-item">
+                        <a class="<%= getLinkActive('category',linkTarget) %>" href="/app/category"><i class="fa fa-fw fa-rocket"></i>Category</a>
+                    </li>                    
+                    <li class="nav-item">
+                        <a class="<%= getLinkActive('schedule',linkTarget) %>" href="/app/schedule"><i class="fa fa-fw fa-calendar-alt"></i>Schedule</a>
+                    </li>                    
+                </ul>
+            </div>
+        </nav>
+    </div>
+</div>
+
+<% function getLinkActive(link,target){
+    if(link === target){
+        return 'nav-link active'
+    } 
+    return 'nav-link'
+}
+%>

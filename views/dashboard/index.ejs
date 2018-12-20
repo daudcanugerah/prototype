@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Protorype</title>
+    <%- include("../partials/css.min.ejs")   -%>
+</head>
+
+<body>
+    <div class="dashboard-main-wrapper">
+        <div class="dashboard-header">
+            <%- include('../partials/header') -%>
+        </div>
+        <div class="nav-left-sidebar sidebar-dark">
+            <%- include('../partials/sidebar') -%>
+        </div>
+        <div class="dashboard-wrapper">
+            <div class="container-fluid dashboard-content">
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                        <div class="card">
+                            <h5 class="card-header">Basic Table</h5>
+                            <div class="card-body">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer">
+                <%- include("../partials/footer")   -%>
+            </div>
+        </div>
+    </div>
+    <%- include("../partials/js.min.ejs")   -%>
+</body>
+
+</html>

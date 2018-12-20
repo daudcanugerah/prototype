@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Protorype</title>
+    <%- include("../partials/css.min.ejs")   -%>
+</head>
+
+<body>
+    <div class="dashboard-main-wrapper">
+        <div class="dashboard-header">
+            <%- include('../partials/header') -%>
+        </div>
+        <div class="nav-left-sidebar sidebar-dark">
+            <%- include('../partials/sidebar') -%>
+        </div>
+        <div class="dashboard-wrapper">
+            <div class="container-fluid dashboard-content">
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                        <div class="card">
+                             <h5 class="card-header">Tambah Schedule</h5>
+                            <div class="card-body">
+                                <form id="time" method="POST" action="/app/schedule/addAction">
+                                    <div class="form-group row">
+                                        <label class="col-sm-2 col-form-label">Nama Schedule</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" name="name" class="form-control">
+                                        </div>
+                                    </div>
+                                    <%- include("../partials/time",{className:"minute",name:"Menit"})   -%>
+                                    <%- include("../partials/time",{className:"hour",name:"Jam"})   -%>
+                                    <%- include("../partials/time",{className:"month",name:"Bulan"})   -%>
+                                    <%- include("../partials/time",{className:"dayOfMonth",name:"Hari dalam sebulan"})   -%>
+                                    <%- include("../partials/time",{className:"dayOfWeek",name:"Hari dalam seminggu"})   -%>
+                                    <div class="form-group row range">
+                                        <label class="col-sm-2">Jumlah Account</label>
+                                        <div class="col-sm-10">
+                                            <input type="range" name="account" class="form-control-range" id="formControlRange">
+                                            <p class="range-param"></p>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-primary btn-add">Submit</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer">
+                <%- include("../partials/footer")   -%>
+                <%- include("../partials/js.min.ejs")   -%>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.js"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/locale/id.js"></script>
+                <script src="/public/libs/js/time.js"></script>
+                <script>
+                    AddSchedule('minute');
+                    AddSchedule('hour');
+                    AddSchedule('month');
+                    AddSchedule('dayOfMonth');
+                    AddSchedule('dayOfWeek');
+
+                    $.ajax({
+                        url: '/app/category/getCategoryJX',
+                        type: 'GET',
+                        processData: false,
+                        contentType: false,
+                        success: function (data) {
+                            let elem = ({ _id, name, countArray }) => {
+                                return `
+                                <div class="form-check form-check-inline col-sm-3">
+                                    <input data-id=${countArray} id="category-checkbox" type="checkbox" name="category_id[]" value="${_id}" class="form-check-input" >
+                                    <label class="form-control-label">${name} (${countArray} post)</label>
+                                </div>`
+                            }
+                            let checkbox = `<div class="form-group row"><label class="col-sm-2">Kategori</label>`;
+                            data.forEach(items => {
+                                checkbox += elem(items);
+                            });
+                            checkbox += "</div>"
+                            $('.range').before(checkbox);
+                        },
+                    });
+                    var countAccount = 0;
+                    $.ajax({
+                        url: '/app/account/getCountJX',
+                        type: 'GET',
+                        processData: false,
+                        contentType: false,
+                        success: function (data) {
+                            countAccount = data;
+                            $('input[type="range"]').attr('max', data);
+                            $('input[type="range"]').attr('value', 0);
+                            $('.range-param').html(0 + "/" + countAccount);
+                        },
+                    });
+
+                    $('input[type="range"]').on('input change', function (evet) {
+                        $('.range-param').html(event.target.value + "/" + countAccount);
+                    });
+                    var countArray = 0;
+                    $(document).on("change", "input#category-checkbox", function () {
+                        let num = Number($(this).attr('data-id'));
+                        countArray += this.checked ? num : (num * (-1));
+                    });
+                </script>
+            </div>
+        </div>
+    </div>
+    <script>
+    </script>
+</body>
+
+</html>

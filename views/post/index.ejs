@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Protorype</title>
+    <%- include("../partials/css.min.ejs")   -%>
+</head>
+
+<body>
+    <div class="dashboard-main-wrapper">
+        <div class="dashboard-header">
+            <%- include('../partials/header') -%>
+        </div>
+        <div class="nav-left-sidebar sidebar-dark">
+            <%- include('../partials/sidebar') -%>
+        </div>
+        <div class="dashboard-wrapper">
+            <div class="container-fluid dashboard-content">
+                <%- include('../partials/subHeader') -%>
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                        <div class="card">
+                            <h5 class="card-header">Basic Table</h5>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table id="book-table" style="width:100%" class="table table-striped table-bordered first">
+                                        <thead>
+                                            <tr>
+                                                <th>No</th>
+                                                <th>ID</th>
+                                                <th>Content</th>
+                                                <th>Attachment</th>
+                                                <th>Category</th>
+                                                <th>Terakhir Update</th>
+                                                <th>Status</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer">
+                <%- include("../partials/footer")   -%>
+            </div>
+        </div>
+    </div>
+    <%- include("../partials/js.min.ejs")   -%>
+    <%- include("./m-add")   -%>
+    <%- include("./../category/m-add")   -%>
+    <%- include("./../partials/modal-info.ejs")   -%>
+
+    <script type="text/javascript">
+        table = $('#book-table').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": "/app/getPostDTL",
+            "language": {
+                "lengthMenu": 'Display <select class="form-control form-control-sm">' +
+                    '<option value="10">10</option>' +
+                    '<option value="20">20</option>' +
+                    '<option value="30">30</option>' +
+                    '<option value="40">40</option>' +
+                    '<option value="50">50</option>' +
+                    '<option value="-1">All</option>' +
+                    '</select>'
+            },
+            dom:
+                "<'row'<'col-sm-7'B><'col-sm-1'l><'col-sm-4'f>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+            buttons: [
+                {
+                    text: 'Add Post',
+                    name: 'addPost',
+                    className: 'btn btn-sm btn-secondary',
+                }
+            ]
+        });
+        table.button('addPost:name').nodes().attr('data-target', '#exampleModal').attr('data-toggle', 'modal');
+
+        $('textarea').on('keyup blur', function () {
+
+            var val = $(this).val();
+            $(".progress-bar").css('width', `${(100 / 100) * val.length}%`).html(`${(100 / 100) * val.length}%`)
+
+            if (val.length > 100) {
+                $(this).val(val.slice(0, 100));
+            }
+        });
+
+
+        $("#formdata").submit(function (e) {
+            e.preventDefault();
+            var formData = new FormData($(this)[0]);
+            $.ajax({
+                url: '/app/post/addJX',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    $('#exampleModal').modal('toggle');
+                    $('#formdata')[0].reset();
+                    $(".progress-bar").css('width', `0%`).html(`0%`)
+                },
+                error: function (data) {
+                    var data = data.responseJSON;
+                    console.log(data)
+                    // let elem = "<ul>";
+                    // data.forEach(item => {
+                    //     elem += `<li>${item.param} - ${item.msg}</li>`
+                    // });
+                    // elem += "</ul>";
+                    // $('#modal-info').modal('toggle');
+                    // $('#modal-info').find('.modal-body').html(elem);
+                    // $('#modal-info').find('.modal-title').text("Info");
+                },
+            });
+
+            return true;
+        });
+
+        $("#form-modal-addcategory").submit(function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: '/app/category/addJX',
+                type: 'POST',
+                data: $(this).serializeArray(),
+                success: function (data) {
+                    $('#modal-category-add').modal('toggle');
+                    $('#form-modal-addcategory')[0].reset();
+                    setCategory();
+                },
+            });
+
+            return true;
+        });
+
+        function setCategory() {
+            $("select#category").html("");
+            $.ajax({
+                url: '/app/category/getCategoryJX',
+                type: 'GET',
+                success: function (data) {
+                    let option = "";
+                    data.forEach(item => {
+                        option += `<option value="${item._id}">${item.name}</option>`;
+                    });
+                    $("select#category").append(option);
+                },
+            });
+        }
+        setCategory();
+    </script>
+</body>
+
+</html>
