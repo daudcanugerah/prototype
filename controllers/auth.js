@@ -20,7 +20,7 @@ class Auth {
         req.session.idUser = String(dataUser._id); // eslint-disable-line no-underscore-dangle
         req.session.save();
         req.flash('info', `Login Success, Welcome ${dataUser.username}`);
-        res.redirect('/app/schedule');
+        res.redirect('/app/dashboard');
       } else {
         req.flash('info', 'Login Failed Incorent Username or Password');
         res.redirect('/login');
@@ -29,7 +29,11 @@ class Auth {
   }
 
   logout() { // eslint-disable-line
-    return async function (req, res, next) {
+    return (req, res) => {
+      req.session.isLogin = null;
+      req.session.idUser = null;
+      req.flash('info', 'Logout Succes');
+      res.redirect('/');
     };
   }
 }
