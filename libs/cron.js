@@ -2,12 +2,12 @@ const CronJob = require('cron').CronJob;
 const Model = require('./../model/model');
 const { getCronFormat, isset } = require('./../libs/helper');
 const EngineTwitter = require('./engine');
-
+const DB = new Model();
 var activeCron = {};
 
 let runCron = async function () {
     let cron = {};
-    let dbRequest = await Model.find({ collection: 'schedule', args: {} });
+    let dbRequest = await DB.find({ collection: 'schedule', args: [{}] });
     let tasks = await dbRequest.toArray();
     // convert cron
     for (let i = 0; i < tasks.length; i++) {

@@ -19,13 +19,13 @@ class Account extends Twitter {
         return async (req, res, next) => {
             let draw = req.query.draw;
             let start = Number(req.query.start);
-            let recordTotal = Number(await model.count({ collection: 'account', args: {} }));
+            let recordTotal = Number(await model.count({ collection: 'account', args: [{}] }));
             let length = req.query.length <= 0 ? recordTotal : Number(req.query.length);
             let search = req.query.search;
             let order = req.query.order;
 
             let data = [];
-            let account = await model.find({ collection: 'account', args: {} });
+            let account = await model.find({ collection: 'account', args: [{}] });
             let no = 0;
             let accountData = await account.skip(start).limit(length).sort({ 'created_at': -1 }).toArray();
 

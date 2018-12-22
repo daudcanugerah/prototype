@@ -7,4 +7,5 @@ module.exports = {
     post: require('./post'),
     category: require('./category'),
     schedule: require('./schedule'),
+    auth : require('./auth')
 }

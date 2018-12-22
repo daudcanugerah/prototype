@@ -1,10 +1,10 @@
 const express = require('express');
-const { account, post, category, token, schedule, dashboard } = require('./controllers/index');
-// const { postValidation } = require('./validations/index');
-const { upload, imageFilter, isset, getCronFormat, converToCron } = require('./libs/helper')
-const Model = require('./model/model');
+const {
+  account, post, category, token, schedule, dashboard,
+} = require('./controllers/index');
+
 const app = express.Router();
-const { startCron, stopCron } = require('./libs/cron');
+const { isset } = require('./libs/helper');
 /**
  *  Route Datatables
  */
@@ -44,13 +44,13 @@ app.get('/category/getCategoryJX', category.getCategoryJX());
 app.get('/schedule/add', schedule.add());
 app.post('/schedule/addAction', schedule.addAction());
 app.get('/schedule', schedule.index());
-app.get('/schedule/start/:id*?', function (req, res, next) {
-    let response = isset(req.params.id) ? startCron(req.params.id) : startCron();
-    res.json(response);
+app.get('/schedule/start/:id*?', (req, res, next) => {
+  const response = isset(req.params.id) ? startCron(req.params.id) : startCron();
+  res.json(response);
 });
-app.get('/schedule/stop/:id*?', function (req, res, next) {
-    let response = isset(req.params.id) ? stopCron(req.params.id) : stopCron();
-    res.json(response);
+app.get('/schedule/stop/:id*?', (req, res, next) => {
+  const response = isset(req.params.id) ? stopCron(req.params.id) : stopCron();
+  res.json(response);
 });
 
 
@@ -63,4 +63,14 @@ app.get('/token/getRequestToken', token.getRequestToken());
 /**
  *  file Upload Route
  */
+
+
+/**
+ *  custom page 404
+ */
+
+app.get('/*', (req, res) => {
+  res.send('what???', 404);
+});
+
 module.exports = app;

@@ -1,45 +1,45 @@
 const multer = require('multer');
 
-let isset = function isset(v) {
-    if (typeof v !== 'undefined' && v !== null) {
-        return true;
-    }
-    return false;
-}
+const isset = function isset(v) {
+  if (typeof v !== 'undefined' && v !== null) {
+    return true;
+  }
+  return false;
+};
 
-let upload = function (args) {
-    const upload = multer({ dest: 'public/uploads', ...args })
-    return upload;
+const upload = function (args) {
+  const upload = multer({ dest: 'public/uploads', ...args });
+  return upload;
 };
 
 
-let imageFilter = function (req, file, cb) {
-    if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
-        return cb(Promise.reject('error'), false);
-    }
+const imageFilter = function (req, file, cb) {
+  if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
+    return cb(Promise.reject('error'), false);
+  }
 };
 
 
-let extractForm = function (data) {
-    let newa = {};
-    for (const object in data) {
-        newa[object] = {};
-        for (const key in data[object]) {
-            let temp = data[object][key];
-            if (key == "range") {
-                newa[object][key] = [];
-                for (let i = 0; i < temp['from'].length; i++) {
-                    newa[object][key].push([temp['from'][i], temp['to'][i]]);
-                }
-            } else {
-                newa[object][key] = temp;
-            }
+const extractForm = function (data) {
+  const newa = {};
+  for (const object in data) {
+    newa[object] = {};
+    for (const key in data[object]) {
+      const temp = data[object][key];
+      if (key == 'range') {
+        newa[object][key] = [];
+        for (let i = 0; i < temp.from.length; i++) {
+          newa[object][key].push([temp.from[i], temp.to[i]]);
         }
+      } else {
+        newa[object][key] = temp;
+      }
     }
-    return newa;
+  }
+  return newa;
 };
 
-let converToCron = function (data, name) {
+const converToCron = function (data, name) {
     if (isset(data[name])) {
         let result = "";
         let object = data[name];
@@ -63,40 +63,40 @@ let converToCron = function (data, name) {
             }
         }
         return result.substr(0, result.length - 1);
-    } else {
+    } 
         return '*';
-    }
+    
 };
 
-let getCronFormat = (data, layout = ['minute', 'hour', 'dayOfMonth', 'month', 'dayOfWeek']) => {
-    let result = "";
-    layout.forEach(item => {
-        result += converToCron(data, item) + " ";
-    })
-    return result.trimRight();
+const getCronFormat = (data, layout = ['minute', 'hour', 'dayOfMonth', 'month', 'dayOfWeek']) => {
+  let result = '';
+  layout.forEach((item) => {
+    result += `${converToCron(data, item)  } `;
+  });
+  return result.trimRight();
 };
 
-let mix = function (...mixins) {
-    class Mix { }
+const mix = function (...mixins) {
+  class Mix { }
 
-    // Programmatically add all the methods and accessors
-    // of the mixins to class Mix.
-    for (let mixin of mixins) {
-        copyProperties(Mix, mixin);
-        copyProperties(Mix.prototype, mixin.prototype);
-    }
+  // Programmatically add all the methods and accessors
+  // of the mixins to class Mix.
+  for (const mixin of mixins) {
+    copyProperties(Mix, mixin);
+    copyProperties(Mix.prototype, mixin.prototype);
+  }
 
-    return Mix;
-}
+  return Mix;
+};
 
 function copyProperties(target, source) {
-    for (let key of Reflect.ownKeys(source)) {
-        if (key !== "constructor" && key !== "prototype" && key !== "name") {
-            let desc = Object.getOwnPropertyDescriptor(source, key);
-            Object.defineProperty(target, key, desc);
-        }
+  for (const key of Reflect.ownKeys(source)) {
+    if (key !== 'constructor' && key !== 'prototype' && key !== 'name') {
+      const desc = Object.getOwnPropertyDescriptor(source, key);
+      Object.defineProperty(target, key, desc);
     }
+  }
 }
 module.exports = {
-    isset, upload, imageFilter, extractForm, getCronFormat, converToCron, mix
-}
+  isset, upload, imageFilter, extractForm, getCronFormat, converToCron, mix,
+};
