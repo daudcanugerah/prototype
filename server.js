@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const flash = require('express-flash');
 
 const path = require('path');
 const morgan = require('morgan');
@@ -18,7 +19,8 @@ const middleware = [
   bodyParser.json(),
   bodyParser.urlencoded({ extended: true }),
   morgan('combined'),
-  session({ secret: 'keyboard cat', cookie: { maxAge: 60000 } }),
+  session({ secret: process.env.APP_SECRET_AUTH, cookie: { maxAge: 60000 } }),
+  flash(),
 ];
 
 app.use(middleware);

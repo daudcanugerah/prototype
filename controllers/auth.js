@@ -19,8 +19,10 @@ class Auth {
         req.session.isLogin = true;
         req.session.idUser = String(dataUser._id); // eslint-disable-line no-underscore-dangle
         req.session.save();
+        req.flash('info', `Login Success, Welcome ${dataUser.username}`);
         res.redirect('/app/schedule');
       } else {
+        req.flash('info', 'Login Failed Incorent Username or Password');
         res.redirect('/login');
       }
     };
