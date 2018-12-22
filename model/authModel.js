@@ -1,5 +1,6 @@
 const Bcrypt = require('bcrypt');
 const Model = require('./model');
+const { ObjectId } = require('mongodb');
 
 class AuthModel extends Model {
   constructor() { // eslint-disable-line
@@ -19,6 +20,16 @@ class AuthModel extends Model {
       throw e;
     }
   }
+
+  async getUserInfo(id) {
+    try {
+      const localId = String(id);
+      const userInfo = await this.findOne({ collection: 'user', args: [{ _id: ObjectId(localId) }] });
+      return userInfo;
+    } catch (err) {
+      throw err;
+    }
+  }
 }
 
-module.exports = AuthModel;
+module.exports = new AuthModel();

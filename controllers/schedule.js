@@ -2,6 +2,8 @@ const { ObjectId } = require('mongodb');
 const { isset } = require('./../libs/helper');
 const DB = require('./../model/model');
 const { getNexDate, getInstance } = require('./../libs/cron');
+const authModel = require('./../model/authModel');
+
 const model = new DB();
 
 module.exports = {
@@ -144,7 +146,8 @@ module.exports = {
   },
   index() {
     return async (req, res) => {
-      res.render('schedule/index.ejs', { linkTarget: 'schedule' });
+      const auth = await authModel.getUserInfo(req.session.idUser);
+      res.render('schedule/index.ejs', { linkTarget: 'schedule', username: auth.username });
     };
   },
 

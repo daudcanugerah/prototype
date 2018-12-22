@@ -2,7 +2,7 @@ const AuthModel = require('./../model/authModel');
 
 class Auth {
   constructor() {
-    this.AuthModel = new AuthModel();
+    this.AuthModel = AuthModel;
   }
 
   loginPage() { //eslint-disable-line 
