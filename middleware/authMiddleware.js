@@ -9,7 +9,7 @@ class AuthMiddleware {
       } else if (!isset(req.session.isLogin) && !allowAuth) {
         next();
       } else {
-        res.render('page/405.ejs');
+        res.redirect(req.headers.referer || '/');
       }
     };
   }
