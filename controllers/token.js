@@ -2,41 +2,39 @@ const Twitter = require('../model/twitter');
 const maccount = require('../model/maccount');
 
 class Token extends Twitter {
+  constructor() { // eslint-disable-line
+    super();
+  }
 
-    constructor() {
-        super();
-    }
+  getRequestToken() {
+    return async (req, res) => {
+      try {
+        const { requestToken } = await this.getOAuthRequestToken();
+        res.json({ oAuthToken: requestToken });
+      } catch (err) {
+        console.log(err.message);
+      }
+    };
+  }
 
-    getRequestToken() {
-        return async (req, res, next) => {
-            try {
-                let { requestToken } = await this.getOAuthRequestToken();
-                res.json({ oAuthToken: requestToken });
-            } catch (err) {
-                console.log(err.message);
-            }
-        }
-
-    }
-
-    getAccessToken() {
-        this.getAccessToken
-        return async (req, res, next) => {
-            try {
-                let userToken = await this.getUserToken(req.query);
-                let data = await this.verifyCredentials(userToken);
-                let dataUser = JSON.parse(data);
-                let { token, tokenSecret } = userToken;
-                await maccount.setCredential({
-                    ...dataUser, token, tokenSecret, created_at: Date(), updated_at: Date()
-                });
-                res.render('account/response', { message: "success" });
-            } catch (err) {
-                let error = JSON.parse(err);
-                res.render('account/response', { message: error.data });
-            }
-        }
-    }
+  getAccessToken() {
+    return async (req, res) => {
+      try {
+        const userToken = await this.getUserToken(req.query);
+        const data = await this.verifyCredentials(userToken);
+        const dataUser = JSON.parse(data);
+        const { token, tokenSecret } = userToken;
+        await maccount.setCredential({
+          ...dataUser, token, tokenSecret, created_at: Date(), updated_at: Date(),
+        });
+        res.render('account/response', { message: 'success' });
+      } catch (err) {
+        const error = err;
+        console.log(err);
+        res.render('account/response', { message: error });
+      }
+    };
+  }
 }
 
-module.exports = new Token;
+module.exports = new Token();

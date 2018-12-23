@@ -1,49 +1,67 @@
+const request = require('request');
 const Oauth = require('./../libs/oauth');
 
 class Twitter extends Oauth {
-    constructor() {
-        super();
-    }
+  constructor() { // eslint-disable-line
+    super();
+  }
 
-    verifyCredentials({ token, tokenSecret }) {
-        return new Promise(async (resolve, reject) => {
-            try {
-                this.oa.get(
-                    ' https://api.twitter.com/1.1/account/verify_credentials.json',
-                    token,
-                    tokenSecret,
-                    function (error, response) {
-                        if (error) {
-                            reject(error);
-                        }
-                        resolve(response);
-                    }
-                );
-            } catch (err) {
-                throw err;
+  /**
+   *
+   * @param string token
+   * @param string tokenSecret
+   * @desc  Check Credentials / get User Profile
+   * @return Promises
+   */
+  verifyCredentials({ token, tokenSecret }) {
+    const oauth = {
+      ...this.paramOauth,
+      token,
+      tokenSecret,
+    };
+    return new Promise(async (resolve, reject) => {
+      try {
+        request.get({ url: ' https://api.twitter.com/1.1/account/verify_credentials.json', oauth },
+          (e, r, body) => {
+            if (e) {
+              reject(e);
             }
-        });
-    }
+            resolve(body);
+          });
+      } catch (err) {
+        throw err;
+      }
+    });
+  }
 
-    /**
-     *  @return Promise
-     */
-    async updateStatus({ status, token, tokenSecret }) {
-        return new Promise(async (resolve, reject) => {
-            try {
-                let request = await this.oa.get(
-                    `https://api.twitter.com/1.1/statuses/update.json?` +
-                    `status=${status}`,
-                    token,
-                    tokenSecret
-                );
-                resolve(request);
-
-            } catch (err) {
-                resolve(err);
+  /**
+   *
+   * @param string status
+   * @param string token
+   * @param string tokenSecret
+   * @desc  Update status twitter
+   * @return Promises
+   */
+  async updateStatus({ status, token, tokenSecret }) {
+    const oauth = {
+      ...this.paramOauth,
+      token,
+      tokenSecret,
+    };
+    return new Promise(async (resolve, reject) => {
+      try {
+        request.post({ url: `https://api.twitter.com/1.1/statuses/update.json?status=${status}`, oauth },
+          (e, r, body) => {
+            if (e) {
+              reject(e);
             }
-        })
-    }
+            resolve(body);
+          });
+      } catch (err) {
+        throw err;
+      }
+    });
+  }
 }
 
 module.exports = Twitter;
