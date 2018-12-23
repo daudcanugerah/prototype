@@ -1,42 +1,51 @@
-const oauth = require('oauth').OAuth;
+/* eslint-disable */
+const request = require('request');
 const { isset } = require('./../libs/helper');
+const qs = require('query-string'); 
 
 class Oauth {
   constructor() {
-    this.oa = this.initialize();
-  }
-
-  initialize() { //eslint-disable-line
-    try {
-      const data = new oauth(
-        'https://api.twitter.com/oauth/request_token',
-        'https://api.twitter.com/oauth/access_token',
-        'smYhmOzlJzNbqq6KTcChsKVQs',
-        'WFCJmWgVMJjNvnqGpTzZfLZMK9bYt77miiKdy1ThQO8NbwgzDS',
-        process.env.OAUTH_VERSION,
-        null,
-        process.env.OAUTH_SIGNATURE_METHOD,
-      );
-      return data;
-    } catch (err) {
-      throw err;
-    }
+      this.paramOauth = {
+            consumer_key: this.consumer_key,
+            consumer_secret: this.consumer_secret,     
+      }
   }
 
   /**
-     *
-     */
+   *  Step 1
+   *  @desc get oauth_token and oauth_token_secret from twitter 
+   *  @return Promises : oauth_token oauth_token_secret
+   *  @see 3 legged oauth 1.0
+   */
   async getOAuthRequestToken() {
-    return new Promise((resolve, reject) => {
-      this.oa.getOAuthRequestToken(async (error, oAuthToken, oAuthTokenSecret, results) => {
-        if (error) {
-          reject(error({ message: 'error request token', code: '401' }));
-        }
-        resolve({ requestToken: oAuthToken, requestTokenSecret: oAuthTokenSecret });
-      });
-    });
-  }
-
+    let oauth = {
+        callback: 'http://127.0.0.1:3000/app/token/cb_twitter',
+        ...this.paramOauth
+    },url = 'https://api.twitter.com/oauth/request_token';
+    return new Promise((resolve,reject)=>{
+          try{
+            request.post({url,oauth}, function (e, r, body){
+                if(e){
+                    reject(e);
+                }
+                let {oauth_token,oauth_token_secret} = qs.parse(body);
+                resolve({
+                    requestToken : oauth_token,
+                    requestTokenSecret : oauth_token_secret
+                });
+            }); 
+          }catch(err){
+              throw err;
+          }    
+      }); 
+     }
+     /**
+      * Step 2
+      * @param {string} token 
+      * @param {string} requestToken - from getOauthToken() 
+      * @return Promises 
+      * @desc  get verifier from twitter after redirect
+      */
   getOAuthRequestTokenCallBack(token, requestToken) {
     return new Promise((resolve, reject) => {
       if (isset(token.oauth_token) && isset(token.oauth_verifier)) {
@@ -47,6 +56,7 @@ class Oauth {
       return reject(JSON.stringify({ data: 'Missing parameter' }));
     });
   }
+<<<<<<< HEAD
 
   async getOAuthAccessToken(token) {
     const { callbackToken, requestTokenSecret, callbackTokenVerifier } = token;
@@ -65,6 +75,43 @@ class Oauth {
     });
   }
 
+=======
+
+  /**
+    * Step 3
+    * @param {Object} token - from getOAuthRequestTokenCallBack(); 
+    * @return Promises
+    * @desc get userToken
+    */
+  async getOAuthAccessToken(token) {
+    const { callbackToken, requestTokenSecret, callbackTokenVerifier } = token;
+    let oauth = {
+        consumer_key: "0wN7qQs43aeAWBVP0Za7xzLOD",
+        consumer_secret: "LECLHsBOjJ8uiAWRu65GC0RnlHpe8z4dEfrFqEohPMq7HHckHe",
+        token: callbackToken,
+        token_secret: requestTokenSecret,
+        verifier: callbackTokenVerifier,
+    },
+    url = 'https://api.twitter.com/oauth/access_token';
+    return new Promise((resolve, reject) => {
+        try{
+            request.post({url,oauth},(e,r,body)=>{
+                if(e){
+                    reject(e);
+                }
+                let {oauth_token,oauth_token_secret,user_id,screen_name} = qs.parse(body); 
+                resolve({
+                    token : oauth_token,
+                    tokenSecret : oauth_token_secret
+                });
+            });
+        }catch(err){
+            throw err;
+        }
+    });
+  }
+
+>>>>>>> feature/engine-migrate
   async getUserToken(token) {
     try {
       const requestToken = await this.getOAuthRequestToken();
@@ -76,5 +123,10 @@ class Oauth {
     }
   }
 }
+<<<<<<< HEAD
 
 module.exports = Oauth;
+=======
+// module.exports = Oauth;
+module.exports = Oauth;
+>>>>>>> feature/engine-migrate

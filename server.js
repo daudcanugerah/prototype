@@ -1,37 +1,72 @@
-// require('dotenv').config();
-// const request = require('request');
+require('dotenv').config();
+const express = require('express');
+const flash = require('express-flash');
 
-// const options = {
-//   consumer_key: 'smYhmOzlJzNbqq6KTcChsKVQs',
-//   consumer_secret: 'WFCJmWgVMJjNvnqGpTzZfLZMK9bYt77miiKdy1ThQO8NbwgzDS',
-//   token: '833876684352868352-ogYz8aqkq2bviR4tSkNgdBcdPw4f0y8',
-//   token_secret: '6QN3iwiv59jZnbwqWX7FOtxcSGBdzl9WEaDRCYjHreYpC',
-// };
-// const tw = request.post({ url: 'https://api.twitter.com/1.1/statuses/update.json?status=I Have New Toy', oauth: options }, (e, r, data) => {
-//   let json = JSON.parse(data);
-//   console.log(json);
-// });
+const path = require('path');
+const morgan = require('morgan');
+const bodyParser = require('body-parser');
+const listEndpoints = require('express-list-endpoints');
+const session = require('express-session');
+const AppRoute = require('./route');
+const { runCron } = require('./libs/cron');
+const { connect } = require('./libs/database');
 
-// Promise.seriousRace = function(promises) { //eslint-disable-line
-//   const indexPromises = promises.map((p, index) => p.catch(() => {
-//     console.log(`index${index}`);
-//     throw index;
-//   }));
-//   console.log(indexPromises);
-//   return Promise.race(indexPromises).catch(index => { //eslint-disable-line
-//     const p = promises.splice(index, 1)[0];
-//     p.catch(e => console.log(`${e} terjatuh,ahh sudahlah lanjutkan saja`));
-//     return Promise.seriousRace(promises);
-//   });
-// };
+const app = express();
+const authMiddleware = require('./middleware/authMiddleware');
+const { auth } = require('./controllers/index');
+
+const middleware = [
+  bodyParser.json(),
+  bodyParser.urlencoded({ extended: true }),
+  morgan('combined'),
+  session({ secret: process.env.APP_SECRET_AUTH, cookie: { maxAge: 60000 } }),
+  flash(),
+];
+
+app.use(middleware);
+app.set('trust proxy', 1);
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
+app.use('/public', express.static(path.join(__dirname, 'public')));
+
+/**
+ *  Route Auth
+ */
+
+app.get('/login', authMiddleware.checkAuth({ allowAuth: false }), auth.loginPage());
+app.post('/loginAction', auth.loginAction());
+app.get('/logout', authMiddleware.checkAuth({ allowAuth: true }), auth.logout());
+
+/**
+ *  Route APP
+ *  authMiddleware.checkAuth({ allowAuth: true })
+ */
+
+app.use('/app', authMiddleware.checkAuth({ allowAuth: true }), AppRoute);
+
+/**
+ *  Custom Page
+ *  404
+ *  403
+ */
+
+app.get('/forbiden', (req, res) => {
+  res.send('Forbiden', 403);
+});
+
+app.get('*', (req, res) => {
+  res.send('404 Page Not Found', 404);
+});
 
 
-// const peserta1 = new Promise(resolve => setTimeout(resolve, 30, 'Peserta 1'));
-// const peserta2 = new Promise((resolve, reject) => setTimeout(reject, 20, 'Peserta 2'));
-// const peserta3 = new Promise(resolve => setTimeout(resolve, 50, 'Peserta 3'));
-// const peserta4 = new Promise(resolve => setTimeout(resolve, 100, 'Peserta 4'));
-// const peserta5 = new Promise(resolve => setTimeout(resolve, 90, 'Peserta 5'));
-
-// Promise.seriousRace([peserta1, peserta2, peserta3, peserta4, peserta5])
-//   .then(val => console.log('Balapan selesai,Pemenangnya adalah:', val))
-//   .catch(err => console.log('Balapan dihentikan karena : ', err));
+const port = process.env.PORT || 3000;
+app.listen(port, '0.0.0.0', async () => {
+  console.log(`Listening on Port ${port}`);
+  try {
+    await connect();
+    await runCron();
+    console.log(listEndpoints(app));
+  } catch (err) {
+    throw err;
+  }
+});
