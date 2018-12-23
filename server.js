@@ -12,7 +12,7 @@ const { runCron } = require('./libs/cron');
 const { connect } = require('./libs/database');
 
 const app = express();
-// const authMiddleware = require('./middleware/authMiddleware');
+const authMiddleware = require('./middleware/authMiddleware');
 const { auth } = require('./controllers/index');
 
 const middleware = [
@@ -33,17 +33,16 @@ app.use('/public', express.static(path.join(__dirname, 'public')));
  *  Route Auth
  */
 
-app.get('/login', auth.loginPage());
+app.get('/login', authMiddleware.checkAuth({ allowAuth: false }), auth.loginPage());
 app.post('/loginAction', auth.loginAction());
-app.get('/logout', auth.logout());
+app.get('/logout', authMiddleware.checkAuth({ allowAuth: true }), auth.logout());
 
 /**
  *  Route APP
- * authMiddleware.checkAuth({ allowAuth: true })
  *  authMiddleware.checkAuth({ allowAuth: true })
  */
 
-app.use('/app', AppRoute);
+app.use('/app', authMiddleware.checkAuth({ allowAuth: true }), AppRoute);
 
 /**
  *  Custom Page
