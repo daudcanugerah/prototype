@@ -146,8 +146,8 @@ module.exports = {
   },
   index() {
     return async (req, res) => {
-      const auth = await authModel.getUserInfo(req.session.idUser);
-      res.render('schedule/index.ejs', { linkTarget: 'schedule', username: auth.username });
+      // const auth = await authModel.getUserInfo(req.session.idUser);
+      res.render('schedule/index.ejs', { linkTarget: 'schedule', username: 'daud' });
     };
   },
 

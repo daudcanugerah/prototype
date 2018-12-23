@@ -21,10 +21,10 @@ class Model {
     }
   }
 
-  async aggregate({ collection, ...args }) { // eslint-disable-line class-methods-use-this
+  async aggregate({ collection, args }) { // eslint-disable-line class-methods-use-this
     try {
       const db = await getDb();
-      const request = await db.collection(collection).aggregate(args.args);
+      const request = await db.collection(collection).aggregate([...args]);
       return request;
     } catch (err) {
       throw err;
