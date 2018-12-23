@@ -56,26 +56,6 @@ class Oauth {
       return reject(JSON.stringify({ data: 'Missing parameter' }));
     });
   }
-<<<<<<< HEAD
-
-  async getOAuthAccessToken(token) {
-    const { callbackToken, requestTokenSecret, callbackTokenVerifier } = token;
-    return new Promise((resolve, reject) => {
-      this.oa.getOAuthAccessToken(
-        callbackToken,
-        requestTokenSecret,
-        callbackTokenVerifier,
-        (error, oAuthAccessToken, oAuthAccessTokenSecret, results) => {
-          if (error) {
-            reject(JSON.stringify(error));
-          }
-          resolve({ ...token, token: oAuthAccessToken, tokenSecret: oAuthAccessTokenSecret });
-        },
-      );
-    });
-  }
-
-=======
 
   /**
     * Step 3
@@ -111,7 +91,6 @@ class Oauth {
     });
   }
 
->>>>>>> feature/engine-migrate
   async getUserToken(token) {
     try {
       const requestToken = await this.getOAuthRequestToken();
@@ -123,10 +102,5 @@ class Oauth {
     }
   }
 }
-<<<<<<< HEAD
-
-module.exports = Oauth;
-=======
 // module.exports = Oauth;
 module.exports = Oauth;
->>>>>>> feature/engine-migrate

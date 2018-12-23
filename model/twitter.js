@@ -35,29 +35,6 @@ class Twitter extends Oauth {
   }
 
   /**
-<<<<<<< HEAD
-     *  @return Promise
-     */
-  async updateStatus({ status, token, tokenSecret }) {
-    return new Promise(async (resolve, reject) => {
-      try {
-        this.oa.post(
-          'https://api.twitter.com/1.1/statuses/update.json',
-          token,
-          tokenSecret,
-          (error, response) => {
-            console.log('asfsf');
-            if (error) {
-              console.log(error);
-              reject(error);
-            }
-            console.log(response);
-            resolve(response);
-          },
-        );
-      } catch (err) {
-        console.log(err);
-=======
    *
    * @param string status
    * @param string token
@@ -82,7 +59,6 @@ class Twitter extends Oauth {
           });
       } catch (err) {
         throw err;
->>>>>>> feature/engine-migrate
       }
     });
   }
