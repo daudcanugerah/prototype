@@ -1,5 +1,5 @@
 const oauth = require('oauth').OAuth;
-const {isset} = require('./../libs/helper');
+const { isset } = require('./../libs/helper');
 
 class Oauth {
     constructor() {
