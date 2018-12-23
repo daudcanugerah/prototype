@@ -12,7 +12,7 @@ const { runCron } = require('./libs/cron');
 const { connect } = require('./libs/database');
 
 const app = express();
-const authMiddleware = require('./middleware/authMiddleware');
+// const authMiddleware = require('./middleware/authMiddleware');
 const { auth } = require('./controllers/index');
 
 const middleware = [
@@ -29,25 +29,21 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use('/public', express.static(path.join(__dirname, 'public')));
 
-
-/**
- *  Local Middleware
- */
-
-
 /**
  *  Route Auth
  */
 
-app.get('/login', authMiddleware.checkAuth({ allowAuth: false }), auth.loginPage());
+app.get('/login', auth.loginPage());
 app.post('/loginAction', auth.loginAction());
-app.get('/logout', authMiddleware.checkAuth({ allowAuth: true }), auth.logout());
+app.get('/logout', auth.logout());
 
 /**
  *  Route APP
+ * authMiddleware.checkAuth({ allowAuth: true })
+ *  authMiddleware.checkAuth({ allowAuth: true })
  */
 
-app.use('/app', authMiddleware.checkAuth({ allowAuth: true }), AppRoute);
+app.use('/app', AppRoute);
 
 /**
  *  Custom Page
