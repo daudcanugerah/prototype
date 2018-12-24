@@ -51,7 +51,7 @@ class Model {
     try {
       const db = await getDb();
       const request = await db.collection(collection).insertOne(...args);
-      console.log(request);
+      return request;
     } catch (err) {
       throw err;
     }
@@ -67,15 +67,24 @@ class Model {
     }
   }
 
-  getObjectId(data = []) { // eslint-disable-line
+  async updateOne({ collection, args }) { // eslint-disable-line class-methods-use-this
+    try {
+      const db = await getDb();
+      const request = await db.collection(collection).updateOne(...args);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  getObjectId(data) { // eslint-disable-line
     const localData = [];
-    data.map((e) => {
-      localData.push(ObjectId(e));
-    });
-    if (localData.length > 0) {
+    if (Array.isArray(data)) {
+      data.map((e) => {
+        localData.push(ObjectId(e));
+      });
       return localData;
     }
-    return localData[0];
+    return ObjectId(data);
   }
 }
 

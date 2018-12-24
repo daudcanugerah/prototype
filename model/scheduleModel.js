@@ -9,19 +9,14 @@ class ScheduleModel extends Model {
     return new ScheduleModel();
   }
 
-  async createLog(data) { //eslint-disable-line
-    const {
-      startDate, endDate, scheduleId,
-    } = data;
+  async createLog(scheduleId) { //eslint-disable-line
     try {
       const requestInsert = await this.insertOne(
         {
           collection: 'Schedule_Log',
           args: [
             {
-              schedule_id: scheduleId,
-              start: startDate,
-              end: endDate,
+              schedule_id: this.getObjectId(scheduleId),
               posts: [],
               created_at: Date(),
               updated_at: Date(),
@@ -29,34 +24,36 @@ class ScheduleModel extends Model {
           ],
         },
       );
+      console.log(requestInsert);
       return requestInsert;
     } catch (err) {
       throw err;
     }
   }
 
-  async createLogPost({ scheduleId, ...data }) {
-    const {
-      postId, accountId, tweetId, tweet, note,
-    } = data;
+  async createLogPost({
+    logId, postId, accountId, tweetId, tweet, message, created_at, code,
+  }) {
     try {
-      const requestInsert = await this.insertOne({
+      const requestInsert = await this.updateOne({
         collection: 'Schedule_Log',
         args: [
-          { schedule_id: scheduleId },
+          { _id: this.getObjectId(logId) },
           {
+            $set: { updated_at: Date() },
             $push: {
-              posts: {
-                $each: [
-                  {
-                    post_id: this.getObjectId(postId),
-                    account_id: this.getObjectId(accountId),
-                    tweet_id: tweetId,
-                    tweet,
-                    note,
+              posts:
+                {
+                  post_id: this.getObjectId(postId),
+                  account_id: this.getObjectId(accountId),
+                  tweet_id: tweetId,
+                  tweet,
+                  note: {
+                    message,
+                    code,
                   },
-                ],
-              },
+                  created_at,
+                },
             },
           },
         ],

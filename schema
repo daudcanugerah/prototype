@@ -1,0 +1,14 @@
+/* ScheduleLOG
+
+{
+    schedule_id : ObjectId(xxxxxxx),
+    start       : date(),
+    end         : date(),
+    post : [
+        {post_id : objectId(yyyytt), account_id : objectId(yyyytt), tweet_id : 'stsfsss', tweet : true, note : }
+        {post_id : objectId(yyyytt), account_id : objectId(yyyytt), tweet_id : 'stsfsss', tweet : true, note : },
+        {post_id : objectId(yyyytt), account_id : objectId(yyyytt), tweet_id : 'stsfsss', tweet : true, note : },
+    ],
+    created_at : Date(),
+    updated_at : Date(),
+}

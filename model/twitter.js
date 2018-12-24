@@ -58,8 +58,12 @@ class Twitter extends Oauth {
           (e, r, body) => {
             if (e) {
               reject(e);
+            } else if (r.statusCode != 200) {
+              const result = JSON.parse(body).errors[0];
+              resolve(result);
             }
-            resolve(body);
+            const result = JSON.parse(body);
+            resolve(result);
           });
       } catch (err) {
         throw err;
