@@ -5,7 +5,7 @@ class ScheduleModel extends Model {
     super();
   }
 
-  getInstance() { // eslint-disable-line
+  static getInstance() { // eslint-disable-line
     return new ScheduleModel();
   }
 
