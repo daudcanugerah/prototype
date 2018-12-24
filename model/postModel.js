@@ -1,9 +1,13 @@
 
 const Model = require('./model');
 
-class PostModel {
-  constructor() {
-    this.model = new Model();
+class PostModel extends Model {
+  constructor() { // eslint-disable-line
+    super();
+  }
+
+  static getInstance() {
+    return new PostModel();
   }
   /**
      *
@@ -12,12 +16,16 @@ class PostModel {
      * @description get random post
      * @return Array
      */
-  async getSamplePost({ categoriesId, limit }) { // eslint-disable-line
+  async getSamplePost(categoriesId) { // eslint-disable-line
     try {
-      const requestQuery = await this.model.find({
-        category_id: { $in: [...categoriesId] },
-      }).limit(limit);
-      return requestQuery.toArray();
+      const requestQuery = await this.aggregate({
+        collection: 'post',
+        args: [
+          { $match: { category_id: { $in: this.getObjectId(categoriesId) } } },
+          { $sample: { size: 1 } },
+        ],
+      });
+      return requestQuery;
     } catch (err) {
       throw err;
     }

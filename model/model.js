@@ -1,4 +1,5 @@
 const { getDb } = require('./../libs/database');
+const { ObjectId } = require('mongodb');
 
 class Model {
   async find({ collection, args }) { // eslint-disable-line class-methods-use-this
@@ -10,7 +11,9 @@ class Model {
       throw err;
     }
   }
-
+  function getInstance(){
+    return new Model();
+  }
   async findOne({ collection, args }) { // eslint-disable-line class-methods-use-this
     try {
       const db = await getDb();
@@ -60,6 +63,17 @@ class Model {
     } catch (err) {
       throw err;
     }
+  }
+
+  getObjectId(data = []) { // eslint-disable-line
+    const localData = [];
+    data.map((e) => {
+      localData.push(ObjectId(e));
+    });
+    if (localData.length > 0) {
+      return localData;
+    }
+    return localData[0];
   }
 }
 

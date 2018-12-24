@@ -6,6 +6,10 @@ class Twitter extends Oauth {
     super();
   }
 
+  static initialize() {
+    return new Twitter();
+  }
+
   /**
    *
    * @param string token
@@ -46,7 +50,7 @@ class Twitter extends Oauth {
     const oauth = {
       ...this.paramOauth,
       token,
-      tokenSecret,
+      token_secret: tokenSecret,
     };
     return new Promise(async (resolve, reject) => {
       try {

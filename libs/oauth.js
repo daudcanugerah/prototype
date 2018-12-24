@@ -6,8 +6,8 @@ const qs = require('query-string');
 class Oauth {
   constructor() {
       this.paramOauth = {
-            consumer_key: this.consumer_key,
-            consumer_secret: this.consumer_secret,     
+            consumer_key: process.env.CONSUMER_KEY,
+            consumer_secret: process.env.CONSUMER_SECRET_KEY,     
       }
   }
 
