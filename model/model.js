@@ -11,9 +11,11 @@ class Model {
       throw err;
     }
   }
-  function getInstance(){
+
+  getInstance() { // eslint-disable-line
     return new Model();
   }
+
   async findOne({ collection, args }) { // eslint-disable-line class-methods-use-this
     try {
       const db = await getDb();
