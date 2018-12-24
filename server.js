@@ -7,6 +7,7 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const listEndpoints = require('express-list-endpoints');
 const session = require('express-session');
+const MemoryStore = require('memorystore')(session);
 const AppRoute = require('./route');
 const { runCron } = require('./libs/cron');
 const { connect } = require('./libs/database');
@@ -19,7 +20,16 @@ const middleware = [
   bodyParser.json(),
   bodyParser.urlencoded({ extended: true }),
   morgan('combined'),
-  session({ secret: process.env.APP_SECRET_AUTH, cookie: { maxAge: 60000 } }),
+  session({
+    store: new MemoryStore({
+      checkPeriod: 86400000,
+    }),
+    saveUninitialized: true,
+    resave: false,
+
+    secret: process.env.APP_SECRET_AUTH,
+    cookie: { maxAge: null },
+  }),
   flash(),
 ];
 
