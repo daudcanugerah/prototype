@@ -15,7 +15,7 @@ class AccountModel extends Model {
   async getAccounts(...args) {
     try {
       const db = await getDb();
-      const request = await db.collection(DEFAULT_COLLECTION).find(args);
+      const request = await db.collection(DEFAULT_COLLECTION).find({ args });
       return request.toArray();
     } catch (err) {
       console.log(err);
@@ -43,6 +43,7 @@ class AccountModel extends Model {
       } else {
         const request = await db.collection(DEFAULT_COLLECTION).insertOne(data);
       }
+      return request;
     } catch (err) {
       console.log(err);
     }

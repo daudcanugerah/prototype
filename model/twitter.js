@@ -21,7 +21,7 @@ class Twitter extends Oauth {
     const oauth = {
       ...this.paramOauth,
       token,
-      tokenSecret,
+      token_secret: tokenSecret,
     };
     return new Promise(async (resolve, reject) => {
       try {
