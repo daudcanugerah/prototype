@@ -12,22 +12,25 @@ const runCron = async function () {
   let cron = {};
   let dbRequest = await DB.find({ collection: 'schedule', args: [{}] });
   let tasks = await dbRequest.toArray();
+  if(tasks.length > 0){
   // convert cron
   for (let i = 0; i < tasks.length; i++) {
-      tasks[i]["time"] = getCronFormat(tasks[i].time);
-  }
+    tasks[i]["time"] = getCronFormat(tasks[i].time);
+}
 
-  tasks.forEach(item => {
-      activeCron[item._id] = (() => {
-      return new CronJob(item.time,async function () {
-        console.log('cron job runnint '+ Date())
-          let engine = new Engine(item);
-          engine.runEngine();
-        });
-      })();
-  });
-  startCron();
-  return cron;
+tasks.forEach(item => {
+    activeCron[item._id] = (() => {
+    return new CronJob(item.time,async function () {
+      console.log('cron job runnint '+ Date())
+        let engine = new Engine(item);
+        engine.runEngine();
+      });
+    })();
+});
+return cron;
+  }
+  console.log('no job');
+  return false;
 };
 
 let startCron = function (id = null) {
