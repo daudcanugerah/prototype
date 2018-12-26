@@ -1,4 +1,4 @@
-const AuthModel = require('./../model/authModel');
+const AuthModel = require('./../model/authModel').getInstance();
 
 class Auth {
   constructor() {

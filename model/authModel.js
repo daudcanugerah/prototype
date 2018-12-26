@@ -7,6 +7,10 @@ class AuthModel extends Model {
     super();
   }
 
+  static getInstance() {
+    return new AuthModel();
+  }
+
   async checkAuth({ username, password }) {
     try {
       const requestDb = await this.findOne({ collection: 'user', args: [{ username }] });
@@ -32,4 +36,4 @@ class AuthModel extends Model {
   }
 }
 
-module.exports = new AuthModel();
+module.exports = AuthModel;

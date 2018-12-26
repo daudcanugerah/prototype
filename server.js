@@ -26,9 +26,8 @@ const middleware = [
     }),
     saveUninitialized: true,
     resave: false,
-
     secret: process.env.APP_SECRET_AUTH,
-    cookie: { maxAge: null },
+    cookie: { maxAge: 10 * 60 * 1000,},
   }),
   flash(),
 ];
@@ -45,14 +44,14 @@ app.use('/public', express.static(path.join(__dirname, 'public')));
 
 app.get('/login', authMiddleware.checkAuth({ allowAuth: false }), auth.loginPage());
 app.post('/loginAction', auth.loginAction());
-app.get('/logout', authMiddleware.checkAuth({ allowAuth: true }), auth.logout());
+app.get('/logout', authMiddleware.checkAuth({ allowAuth: true, redirectTo: '/login' }), auth.logout());
 
 /**
  *  Route APP
  *  authMiddleware.checkAuth({ allowAuth: true })
  */
 
-app.use('/app', authMiddleware.checkAuth({ allowAuth: true }), AppRoute);
+app.use('/app', authMiddleware.checkAuth({ allowAuth: true, redirectTo: '/login' }), AppRoute);
 
 /**
  *  Custom Page

@@ -1,8 +1,7 @@
 const { ObjectId } = require('mongodb');
-const { isset } = require('./../libs/helper');
+const { extractForm } = require('./../libs/helper');
 const DB = require('./../model/model');
 const { getNexDate, getInstance } = require('./../libs/cron');
-const authModel = require('./../model/authModel');
 
 const model = new DB();
 
@@ -15,7 +14,7 @@ module.exports = {
 
   addAction() {
     return async (req, res) => {
-      const time = this.extractForm(req.body.time);
+      const time = extractForm(req.body.time);
       const {
         name, category_id, schedule, account,
       } = req.body;
@@ -37,51 +36,6 @@ module.exports = {
     };
   },
 
-  extractForm(data) {
-    const newa = {};
-    for (const object in data) { //eslint-disable-line
-      newa[object] = {};
-      for (const key in data[object]) { //eslint-disable-line
-        const temp = data[object][key];
-        if (key === 'range') {
-          newa[object][key] = [];
-          for (let i = 0; i < temp.from.length; i++) { //eslint-disable-line
-            newa[object][key].push([temp.from[i], temp.to[i]]);
-          }
-        } else {
-          newa[object][key] = temp;
-        }
-      }
-    }
-    return newa;
-  },
-  converToCron(data, name) {
-    if (isset(data[name])) {
-      let result = '';
-      const object = data[name];
-      for (const key in object) { //eslint-disable-line
-        switch (key) { //eslint-disable-line
-          case 'range':
-            for (let i = 0; i < object[key].length; i++) { //eslint-disable-line
-              result += `${object[key][i][0]}-${object[key][i][1]},`;
-            }
-            break;
-          case 'multiples':
-            object[key].forEach((item) => { //eslint-disable-line
-              result += `${item},`;
-            });
-            break;
-          case 'step':
-            object[key].forEach((item) => { //eslint-disable-line
-              result += `*/${item},`;
-            });
-            break;
-        }
-      }
-      return result.substr(0, result.length - 1);
-    }
-    return '*';
-  },
   getScheduleDTLS() {
     return async (req, res) => {
       const { draw } = req.query;
@@ -114,7 +68,6 @@ module.exports = {
 
       let no = 0;
       const scheduleData = await schedule.toArray();
-      console.log(scheduleData);
       scheduleData.forEach((item) => {
         data.push([
           ((no += 1) + start),

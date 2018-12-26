@@ -1,4 +1,3 @@
-const oauth = require('oauth');
 const {getCronFormat} = require('./../libs/helper');
 const Model = require('./../model/model');
 const CronJob = require('cron').CronJob;
@@ -18,19 +17,16 @@ const runCron = async function () {
     tasks[i]["time"] = getCronFormat(tasks[i].time);
 }
 
-tasks.forEach(item => {
-    activeCron[item._id] = (() => {
-    return new CronJob(item.time,async function () {
-      console.log('cron job runnint '+ Date())
-        let engine = new Engine(item);
-        engine.runEngine();
-      });
-    })();
-});
-return cron;
-  }
-  console.log('no job');
-  return false;
+  tasks.forEach(item => {
+      activeCron[item._id] = (() => {
+      return new CronJob(item.time,async function () {
+        console.log('cron job runnint '+ Date())
+          let engine = new Engine(item);
+          engine.runEngine();
+        });
+      })();
+  });
+  return cron;
 };
 
 let startCron = function (id = null) {
@@ -56,6 +52,7 @@ let startCron = function (id = null) {
         }
     }
 }
+
 let stopCron = function (id = null) {
     if (isset(id)) {
         try {
@@ -103,4 +100,4 @@ let getInstance = (id) => {
     }
 }
 
-module.exports = { runCron };
+module.exports = { runCron,getNexDate,getInstance };

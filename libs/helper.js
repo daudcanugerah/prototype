@@ -40,38 +40,37 @@ const extractForm = function (data) {
 };
 
 const converToCron = function (data, name) {
-    if (isset(data[name])) {
-        let result = "";
-        let object = data[name];
-        for (const key in object) {
-            switch (key) {
-                case 'range':
-                    for (let i = 0; i < object[key].length; i++) {
-                        result += `${object[key][i][0]}-${object[key][i][1]},`;
-                    }
-                    break;
-                case 'multiples':
-                    object[key].forEach(item => {
-                        result += `${item},`
-                    });
-                    break;
-                case 'step':
-                    object[key].forEach(item => {
-                        result += `*/${item},`
-                    });
-                    break;
-            }
-        }
-        return result.substr(0, result.length - 1);
-    } 
-        return '*';
-    
+  if (isset(data[name])) {
+    let result = '';
+    const object = data[name];
+    for (const key in object) {
+      switch (key) {
+        case 'range':
+          for (let i = 0; i < object[key].length; i++) {
+            result += `${object[key][i][0]}-${object[key][i][1]},`;
+          }
+          break;
+        case 'multiples':
+          object[key].forEach((item) => {
+            result += `${item},`;
+          });
+          break;
+        case 'step':
+          object[key].forEach((item) => {
+            result += `*/${item},`;
+          });
+          break;
+      }
+    }
+    return result.substr(0, result.length - 1);
+  }
+  return '*';
 };
 
 const getCronFormat = (data, layout = ['minute', 'hour', 'dayOfMonth', 'month', 'dayOfWeek']) => {
   let result = '';
   layout.forEach((item) => {
-    result += `${converToCron(data, item)  } `;
+    result += `${converToCron(data, item)} `;
   });
   return result.trimRight();
 };

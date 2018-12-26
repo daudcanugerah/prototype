@@ -4,10 +4,8 @@
     "devstart": "nodemon server.js"
   },
   "dependencies": {
-    "axios": "^0.18.0",
     "bcrypt": "^3.0.2",
     "body-parser": "^1.18.3",
-    "connect-mongo": "^2.0.3",
     "cron": "^1.6.0",
     "cronstrue": "^1.58.0",
     "dotenv": "^6.1.0",
@@ -19,16 +17,15 @@
     "express-flash": "^0.0.2",
     "express-list-endpoints": "^4.0.0",
     "express-session": "^1.15.6",
+    "express-validator": "^5.3.1",
     "lodash": "^4.17.11",
     "memorystore": "^1.6.0",
     "moment": "^2.22.2",
     "mongodb": "^3.1.10",
     "morgan": "^1.9.1",
     "multer": "^1.4.1",
-    "oauth": "^0.9.15",
     "pm2": "^3.2.4",
     "query-string": "^6.2.0",
     "request": "^2.88.0"
   }
 }
-

@@ -1,7 +1,7 @@
 const { isset } = require('./../libs/helper');
 
 class AuthMiddleware {
-  checkAuth({ except = [], allowAuth = true }) { // eslint-disable-line
+  checkAuth({ except = [], allowAuth = true,redirectTo = '/' }) { // eslint-disable-line
     return (req, res, next) => {
       // || this.except(except, req.originalUrl)
       if (isset(req.session.isLogin) && allowAuth) {
@@ -9,7 +9,7 @@ class AuthMiddleware {
       } else if (!isset(req.session.isLogin) && !allowAuth) {
         next();
       } else {
-        res.redirect(req.headers.referer || '/');
+        res.redirect(redirectTo || '/');
       }
     };
   }

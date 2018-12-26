@@ -2,6 +2,9 @@ const express = require('express');
 const {
   account, post, category, token, schedule, dashboard,
 } = require('./controllers/index');
+const {
+  categoryValidator,
+} = require('./validator/index');
 
 const app = express.Router();
 const { isset } = require('./libs/helper');
@@ -12,7 +15,7 @@ const { isset } = require('./libs/helper');
 app.get('/getAccountDTL', account.getAccountDTLS());
 app.get('/getPostDTL', post.getPostDTLS());
 app.get('/getScheduleDTL', schedule.getScheduleDTLS());
-
+app.get('/getCategoryDTL', category.getCategoryDTLS());
 /**
  *  Route Dashboard
  */
@@ -34,9 +37,11 @@ app.post('/post/addJX', post.addPostJX());
 /**
  *  Category Route
  */
-app.post('/category/addJX', category.addCategoryJX());
+app.post('/category/addJX', categoryValidator.addCategoryValidator(), category.addCategoryJX());
 app.get('/category/getCategoryJX', category.getCategoryJX());
-
+app.post('/category/deleteCategoryJX', category.deleteCategoryJX());
+app.post('/category/updateJX', categoryValidator.addCategoryValidator(), category.updateCategoryJX());
+app.get('/category', category.index());
 /**
  *  Schedule Route
  */

@@ -12,7 +12,7 @@ class Model {
     }
   }
 
-  getInstance() { // eslint-disable-line
+  static getInstance() { // eslint-disable-line
     return new Model();
   }
 
@@ -61,7 +61,17 @@ class Model {
     try {
       const db = await getDb();
       const request = await db.collection(collection).updateMany(...args);
-      console.log(request);
+      return request;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async deleteOne({ collection, args }) { // eslint-disable-line class-methods-use-this
+    try {
+      const db = await getDb();
+      const request = await db.collection(collection).deleteOne(...args);
+      return request;
     } catch (err) {
       throw err;
     }
@@ -71,6 +81,7 @@ class Model {
     try {
       const db = await getDb();
       const request = await db.collection(collection).updateOne(...args);
+      return request;
     } catch (err) {
       throw err;
     }

@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Protorype</title>
+    <%- include("../partials/css.min.ejs")   -%>
+</head>
+
+<body>
+    <div class="dashboard-main-wrapper">
+        <div class="dashboard-header">
+            <%- include('../partials/header') -%>
+        </div>
+        <div class="nav-left-sidebar sidebar-dark">
+            <%- include('../partials/sidebar') -%>
+        </div>
+        <div class="dashboard-wrapper">
+            <div class="container-fluid dashboard-content">
+                <%- include('../partials/subHeader') -%>
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                        <div class="card">
+                            <h5 class="card-header">Basic Table</h5>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table id="book-table" style="width:100%" class="table table-striped table-bordered first">
+                                        <thead>
+                                            <tr>
+                                                <th>No</th>
+                                                <th>Nama</th>
+                                                <th>Total Post</th>
+                                                <th>Dibuat</th>
+                                                <th>Jenis</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer">
+                <%- include("../partials/footer")   -%>
+            </div>
+        </div>
+    </div>
+    <%- include("../partials/js.min.ejs")   -%>
+    <%- include("./m-add")   -%>
+    <%- include("./../category/m-add")   -%>
+    <%- include("./../partials/modal-info.ejs")   -%>
+    <script src="/public/js/helper.js"></script>
+    <script type="text/javascript">
+        var table = $('#book-table').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": "/app/getCategoryDTL",
+            "language": {
+                "lengthMenu": 'Display <select class="form-control form-control-sm">' +
+                    '<option value="10">10</option>' +
+                    '<option value="20">20</option>' +
+                    '<option value="30">30</option>' +
+                    '<option value="40">40</option>' +
+                    '<option value="50">50</option>' +
+                    '<option value="-1">All</option>' +
+                    '</select>'
+            },
+            dom:
+                "<'row'<'col-sm-7'B><'col-sm-1'l><'col-sm-4'f>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+            buttons: [
+                {
+                    text: 'Add Category',
+                    name: 'addPost',
+                    className: 'btn btn-sm btn-secondary',
+                }
+            ]
+        });
+        table.button('addPost:name').nodes().attr('data-target', '#modal-category-add').attr('data-toggle', 'modal');
+
+        $("#form-modal-addcategory").submit(function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: '/app/category/addJX',
+                type: 'POST',
+                data: $(this).serializeArray(),
+                success: function (data) {
+                        setModalInfo({                        
+                            elem : '<h4>Add Success</h4>',
+                            title : 'Info'
+                        });                            
+                    $('#modal-category-add').modal('toggle');
+                    $('#form-modal-addcategory')[0].reset();
+                    table.ajax.reload();
+                },
+                error : function(data){
+                    let {errors} = JSON.parse(data.responseText)
+                    setModalConfirm({
+                        data : [...errors],
+                        title : 'Error',
+                    });
+                }
+            });
+
+            return true;
+        });
+
+        function deleteCategory(categoryId){
+           setModalConfirm({
+                elem : `<h4>Delete ${categoryId}?</h4>`,
+                title : 'Info',
+                onSubmit : function(){
+                    $.ajax({
+                        url: '/app/category/deleteCategoryJX',
+                        type: 'POST',
+                        data: {
+                            categoryId
+                        },
+                        success: function (data) {
+                        setModalInfo({                        
+                            elem : '<h4>Delete Success</h4>',
+                            title : 'Info'
+                        });                            
+                        },
+                        error : function(data){
+                        setModalInfo({                        
+                            elem : '<h4>Delete Gagal</h4>',
+                            title : 'Info'
+                        });                            
+                        }
+                    });
+                }
+            });          
+        }
+
+    function updateCategory(data){
+        let elem = `
+             <form id="updateCategory" method="post">
+                <div class="form-group">
+                    <label>Nama Kategory</label>
+                    <input type="text" name="name" class="form-control" value="${data.name}"/>
+                    <input type="hidden" name="categoryId" value="${data._id}"/>
+            </div>
+            </form>
+        `;
+           setModalConfirm({
+                elem,
+                title : 'Update Category',
+                onSubmit : function(){
+                    console.log($('#updateCategory').serializeArray());
+                    $.ajax({
+                        url: '/app/category/updateJX',
+                        type: 'POST',
+                        data: $('#updateCategory').serializeArray(),
+                        success: function (data) {
+                        console.log(data);
+                        setModalInfo({                        
+                            elem : '<h4>Update Success</h4>',
+                            title : 'Info'
+                        });                            
+                        },
+                        error : function(data){
+                          let {errors} = JSON.parse(data.responseText)
+                        setModalConfirm({
+                            data : [...errors],
+                            title : 'Error',
+                        });                         
+                        }
+                    });
+                }
+            });          
+        }
+
+    </script>
+</body>
+
+</html>
