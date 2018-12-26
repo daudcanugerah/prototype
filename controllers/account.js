@@ -3,7 +3,6 @@ const DB = require('../model/model');
 const { isset } = require('../libs/helper');
 const moment = require('moment');
 const Twitter = require('./../model/twitter');
-const authModel = require('./../model/authModel');
 
 class Account extends Twitter {
   constructor() {
@@ -13,8 +12,7 @@ class Account extends Twitter {
 
   index() {
     return async (req, res) => {
-      // const auth = await authModel.getUserInfo(req.session.userId);
-      res.render('account/index.ejs', { linkTarget: 'account',username :"daud" });
+      res.render('account/index.ejs', { linkTarget: 'account'});
     };
   }
 

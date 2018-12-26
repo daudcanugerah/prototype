@@ -1,14 +1,12 @@
 const categoryModel = require('./../model/categoryModel').getInstance();
 const model = require('./../model/model').getInstance();
 const { isset } = require('./../libs/helper');
-const authModel = require('./../model/authModel').getInstance();
 const { validationResult } = require('express-validator/check');
 
 class Category {
   index() {
     return async (req, res) => {
-      const { username } = await authModel.getUserInfo(req.session.userId);
-      res.render('category/index', { linkTarget: 'category', username });
+      res.render('category/index', { linkTarget: 'category' });
     };
   }
 

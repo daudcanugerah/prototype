@@ -1,6 +1,5 @@
 const moment = require('moment');
 const model = require('./../model/model').getInstance();
-const authModel = require('./../model/authModel').getInstance();
 
 class Post {
   /**
@@ -8,8 +7,7 @@ class Post {
      */
   index() {
     return async (req, res) => {
-      const { username } = await authModel.getUserInfo(req.session.userId);
-      res.render('post/index.ejs', { linkTarget: 'post', username });
+      res.render('post/index.ejs', { linkTarget: 'post'});
     };
   }
 

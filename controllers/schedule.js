@@ -99,8 +99,7 @@ module.exports = {
   },
   index() {
     return async (req, res) => {
-      // const auth = await authModel.getUserInfo(req.session.userId);
-      res.render('schedule/index.ejs', { linkTarget: 'schedule', username: 'daud' });
+      res.render('schedule/index.ejs', { linkTarget: 'schedule' });
     };
   },
 
