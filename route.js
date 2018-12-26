@@ -3,7 +3,7 @@ const {
   account, post, category, token, schedule, dashboard,
 } = require('./controllers/index');
 const {
-  categoryValidator,
+  categoryValidator, scheduleValidator,
 } = require('./validator/index');
 
 const app = express.Router();
@@ -47,7 +47,7 @@ app.get('/category', category.index());
  */
 
 app.get('/schedule/add', schedule.add());
-app.post('/schedule/addAction', schedule.addAction());
+app.post('/schedule/addAction', scheduleValidator.addScheduleValidator(), schedule.addAction());
 app.get('/schedule', schedule.index());
 app.get('/schedule/start/:id*?', (req, res, next) => {
   const response = isset(req.params.id) ? startCron(req.params.id) : startCron();

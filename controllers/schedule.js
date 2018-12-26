@@ -1,7 +1,8 @@
 const { ObjectId } = require('mongodb');
-const { extractForm } = require('./../libs/helper');
+const { extractForm, getCronFormat } = require('./../libs/helper');
 const DB = require('./../model/model');
 const { getNexDate, getInstance } = require('./../libs/cron');
+const { validationResult } = require('express-validator/check');
 
 const model = new DB();
 
@@ -14,6 +15,12 @@ module.exports = {
 
   addAction() {
     return async (req, res) => {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        req.flash('error', errors.array());
+        return res.redirect('/app/schedule/add');
+      }
+
       const time = extractForm(req.body.time);
       const {
         name, category_id, schedule, account,
@@ -26,13 +33,13 @@ module.exports = {
         await model.insertOne({
           collection: 'schedule',
           args: [{
-            name, type: ['post'], account, category_id, time: [time],
+            name, type: ['post'], account, category_id, time: [time], format: getCronFormat(time),
           }],
         });
       } catch (err) {
         console.log(err);
       }
-      res.json(req.body);
+      return res.redirect('/app/schedule');
     };
   },
 
@@ -48,6 +55,7 @@ module.exports = {
       const schedule = await model.aggregate({
         collection: 'schedule',
         args: [
+          { $match: { deleted_at: { $exists: false } } },
           {
             $skip: start,
           },

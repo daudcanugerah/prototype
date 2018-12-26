@@ -31,6 +31,32 @@ class ScheduleModel extends Model {
     }
   }
 
+  async checkScheduleExist({ name = null, cronFormat = null }) {
+    const project = name === null ? { name: { $eq: ['$name', name] } } : { format: { $eq: ['$format', cronFormat] } };
+    try {
+      const request = await this.aggregate(
+        {
+          collection: 'schedule',
+          args: [
+            {
+              $match: {
+                deleted_at: { $exists: false },
+              },
+            },
+            {
+              $project: {
+                project,
+              },
+            },
+          ],
+        }
+);
+      return request.toArray();
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async createLogPost({
     logId, postId, accountId, tweetId, tweet, message, created_at, code,
   }) {

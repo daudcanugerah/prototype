@@ -1,4 +1,4 @@
-
+/* eslint-disable */
 const option = {
   minute(target) {
     let data = '';
@@ -85,9 +85,10 @@ const elem = {
         </div>
     </div > `,
 };
-const AddSchedule = (name) => {
+const AddSchedule = (name) => { 
   $(`.dropdown-menu.add-${name} a`).on('click', function (event) {
     event.preventDefault();
+    debugger;;
     const data = $(this).attr('data-id');
     $(`.${name}`).append(elem[data](option[name](data), name));
   });

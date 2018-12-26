@@ -23,6 +23,11 @@
                         <div class="card">
                              <h5 class="card-header">Tambah Schedule</h5>
                             <div class="card-body">
+                            <ul class="list-group">
+                                <% for( item in messages.error){ %>
+                                    <li class="list-group-item"><%= messages.error[item].param %> - <%=  messages.error[item].msg %></li>
+                                <% }  %>
+                            </ul>
                                 <form id="time" method="POST" action="/app/schedule/addAction">
                                     <div class="form-group row">
                                         <label class="col-md-2 col-form-label">Nama Schedule</label>
