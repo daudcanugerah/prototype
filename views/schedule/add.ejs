@@ -25,8 +25,8 @@
                             <div class="card-body">
                                 <form id="time" method="POST" action="/app/schedule/addAction">
                                     <div class="form-group row">
-                                        <label class="col-sm-2 col-form-label">Nama Schedule</label>
-                                        <div class="col-sm-10">
+                                        <label class="col-md-2 col-form-label">Nama Schedule</label>
+                                        <div class="col-md-10">
                                             <input type="text" name="name" class="form-control">
                                         </div>
                                     </div>
@@ -36,9 +36,9 @@
                                     <%- include("../partials/time",{className:"dayOfMonth",name:"Hari dalam sebulan"})   -%>
                                     <%- include("../partials/time",{className:"dayOfWeek",name:"Hari dalam seminggu"})   -%>
                                     <div class="form-group row range">
-                                        <label class="col-sm-2">Jumlah Account</label>
-                                        <div class="col-sm-10">
-                                            <input type="range" name="account" class="form-control-range" id="formControlRange">
+                                        <label class="col-md-2">Jumlah Account</label>
+                                        <div class="col-md-10">
+                                            <input type="range" name="account" class="custom-range" id="formControlRange">
                                             <p class="range-param"></p>
                                         </div>
                                     </div>
@@ -70,12 +70,12 @@
                         success: function (data) {
                             let elem = ({ _id, name, countArray }) => {
                                 return `
-                                <div class="form-check form-check-inline col-sm-3">
+                                <div class="form-check form-check-inline col-md-3">
                                     <input data-id=${countArray} id="category-checkbox" type="checkbox" name="category_id[]" value="${_id}" class="form-check-input" >
                                     <label class="form-control-label">${name} (${countArray} post)</label>
                                 </div>`
                             }
-                            let checkbox = `<div class="form-group row"><label class="col-sm-2">Kategori</label>`;
+                            let checkbox = `<div class="form-group"><label class="col-md-2">Kategori</label>`;
                             data.forEach(items => {
                                 checkbox += elem(items);
                             });
@@ -97,9 +97,10 @@
                         },
                     });
 
-                    $('input[type="range"]').on('input change', function (evet) {
-                        $('.range-param').html(event.target.value + "/" + countAccount);
+                    $('input[type="range"]').on('input change', function () {
+                        $('.range-param').html($(this).val() + "/" + countAccount);
                     });
+                    
                     var countArray = 0;
                     $(document).on("change", "input#category-checkbox", function () {
                         let num = Number($(this).attr('data-id'));

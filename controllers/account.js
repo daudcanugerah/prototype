@@ -66,7 +66,7 @@ class Account extends Twitter {
   getCountJx() {
     return async (req, res, next) => {
       try {
-        const recordTotal = await this.model.count({ collection: 'account', args: {} });
+        const recordTotal = await this.model.count({ collection: 'account', args: [{}] });
         res.json(recordTotal);
       } catch (e) {
         throw e;
@@ -77,7 +77,7 @@ class Account extends Twitter {
   syncAccount() {
     return async (req, res, next) => {
       try {
-        const response = await this.model.find({ collection: 'account', args: {} });
+        const response = await this.model.find({ collection: 'account', args: [{}] });
         const data = await response.toArray();
         let credentials = {};
         for (let i = 0; i < data.length; i++) {
