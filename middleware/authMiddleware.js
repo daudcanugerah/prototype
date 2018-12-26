@@ -1,10 +1,15 @@
 const { isset } = require('./../libs/helper');
+const authModel = require('./../model/authModel').getInstance();
 
 class AuthMiddleware {
   checkAuth({ except = [], allowAuth = true,redirectTo = '/' }) { // eslint-disable-line
     return (req, res, next) => {
-      // || this.except(except, req.originalUrl)
       if (isset(req.session.isLogin) && allowAuth) {
+        let render = res.render; //eslint-disable-next-line
+        res.render = async () => {
+          res.locals.auth = await authModel.getUserInfo(req.session.userId);
+          render.apply(res, arguments);
+        };
         next();
       } else if (!isset(req.session.isLogin) && !allowAuth) {
         next();

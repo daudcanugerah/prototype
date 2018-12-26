@@ -8,7 +8,7 @@ class Post {
      */
   index() {
     return async (req, res) => {
-      const { username } = await authModel.getUserInfo(req.session.idUser);
+      const { username } = await authModel.getUserInfo(req.session.userId);
       res.render('post/index.ejs', { linkTarget: 'post', username });
     };
   }
