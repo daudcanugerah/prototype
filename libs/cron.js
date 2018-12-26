@@ -71,7 +71,7 @@ let stopCron = function (id = null) {
                 activeCron[key].stop();
             }
             return true;
-        } catch{
+        } catch {
             return false;
         }
     }
