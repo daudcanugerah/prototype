@@ -47,105 +47,10 @@
                 <%- include("../partials/footer")   -%>
                 <%- include("../partials/js.min.ejs")   -%>
             </div>
-            <!-- Modal add -->
-            <div class="modal fade" id="addCategory" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-                aria-hidden="true">
-                <div style="max-width: 85%!important;" class="modal-dialog modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Add Category</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="time" method="POST" action="/app/schedule/addAction">
-                                <div class="form-group row">
-                                    <label class="col-md-2 col-form-label">Nama Schedule</label>
-                                    <div class="col-md-10">
-                                        <input type="text" name="name" class="form-control">
-                                    </div>
-                                </div>
-                                <%- include("../partials/time",{className:"minute",name:"Menit"})   -%>
-                                <%- include("../partials/time",{className:"hour",name:"Jam"})   -%>
-                                <%- include("../partials/time",{className:"month",name:"Bulan"})   -%>
-                                <%- include("../partials/time",{className:"dayOfMonth",name:"Hari dalam sebulan"})   -%>
-                                <%- include("../partials/time",{className:"dayOfWeek",name:"Hari dalam seminggu"})   -%>
-                                <div class="form-group row range">
-                                    <label class="col-md-2">Jumlah Account</label>
-                                    <div class="col-md-10">
-                                        <input type="range" name="account" class="custom-range" id="formControlRange">
-                                        <p class="range-param"></p>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn-add btn btn-primary">Save changes</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- End Modal Add -->
         </div>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/locale/id.js"></script>
-    <script src="/public/libs/js/time.js"></script>
-
-    <script>
-        AddSchedule('minute');
-        AddSchedule('hour');
-        AddSchedule('month');
-        AddSchedule('dayOfMonth');
-        AddSchedule('dayOfWeek');
-
-        $.ajax({
-            url: '/app/category/getCategoryJX',
-            type: 'GET',
-            processData: false,
-            contentType: false,
-            success: function (data) {
-                let elem = ({ _id, name, countArray }) => {
-                    return `
-                    <div class="form-check form-check-inline col-md-3">
-                        <input data-id=${countArray} id="category-checkbox" type="checkbox" name="category_id[]" value="${_id}" class="form-check-input" >
-                        <label class="form-control-label">${name} (${countArray} post)</label>
-                    </div>`
-                }
-                let checkbox = `<div class="form-group"><label class="col-md-2">Kategori</label>`;
-                data.forEach(items => {
-                    checkbox += elem(items);
-                });
-                checkbox += "</div>"
-                $('.range').before(checkbox);
-            },
-        });
-        var countAccount = 0;
-        $.ajax({
-            url: '/app/account/getCountJX',
-            type: 'GET',
-            processData: false,
-            contentType: false,
-            success: function (data) {
-                countAccount = data;
-                $('input[type="range"]').attr('max', data);
-                $('input[type="range"]').attr('value', 0);
-                $('.range-param').html(0 + "/" + countAccount);
-            },
-        });
-
-        $('input[type="range"]').on('input change', function () {
-            $('.range-param').html($(this).val() + "/" + countAccount);
-        });
-
-        var countArray = 0;
-        $(document).on("change", "input#category-checkbox", function () {
-            let num = Number($(this).attr('data-id'));
-            countArray += this.checked ? num : (num * (-1));
-        });
-    </script>
+        <%- include("./add-modal.ejs")   -%>
+    <%- include("./../partials/modal-info.ejs")   -%>
     <script>
         var DT = $('#book-table').DataTable({
             "processing": true,
@@ -249,6 +154,35 @@
                     DT.ajax.reload()
                 },
             });
+        }
+
+        function deleteSchedule(scheduleId){
+                       setModalConfirm({
+                elem : `<h4>Delete ${scheduleId}?</h4>`,
+                title : 'Info',
+                onSubmit : function(){
+                    $.ajax({
+                        url: '/app/schedule/deleteJX',
+                        type: 'POST',
+                        data: {
+                            scheduleId
+                        },
+                        success: function (data) {
+                        setModalInfo({                        
+                            elem : '<h4>Delete Success</h4>',
+                            title : 'Info'
+                        });         
+                            DT.ajax.reload()                   
+                        },
+                        error : function(data){
+                        setModalInfo({                        
+                            elem : '<h4>Delete Gagal</h4>',
+                            title : 'Info'
+                        });                            
+                        }
+                    });
+                }
+            });          
         }
     </script>
 </body>

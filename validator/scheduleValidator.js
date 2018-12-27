@@ -7,7 +7,6 @@ class scheduleValidator {
   static addScheduleValidator() {
     return checkSchema({
       name: {
-        in: ['body'],
         isLength: {
           options: { min: 7 },
           errorMessage: 'name should be at least 7 chars long',
@@ -31,7 +30,7 @@ class scheduleValidator {
             try {
               const cron = getCronFormat(extractForm(value));
               new CronJob(cron, () => {
-                  console.log('a');
+                console.log('a');
               });
             } catch (e) {
               return Promise.reject('Cron Format Not Valid');
@@ -43,6 +42,43 @@ class scheduleValidator {
               return Promise.reject('Schedule Already exist');
             }
             // check cron valid?
+          },
+        },
+      },
+      category_id: {
+        isEmpty: {
+          errorMessage: 'category canot empty',
+          negated: true,
+        },
+      },
+      account: {
+        isLength: {
+          errorMessage: 'account canot empty',
+          options: {
+            min: 1,
+          },
+        },
+      },
+    });
+  }
+
+  static updateScheduleValidator() {
+    return checkSchema({
+      name: {
+        isLength: {
+          options: { min: 7 },
+          errorMessage: 'name should be at least 7 chars long',
+        },
+        isEmpty: {
+          negated: true,
+          errorMessage: 'name canot empty',
+        },
+        custom: {
+          options: async (value, { req, location, path }) => {
+            const exist = await Model.checkScheduleExist({ name: value });
+            if (exist.length > 0) {
+              return Promise.reject('name already exists');
+            }
           },
         },
       },

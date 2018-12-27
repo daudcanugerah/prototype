@@ -3,6 +3,8 @@ const { extractForm, getCronFormat } = require('./../libs/helper');
 const DB = require('./../model/model');
 const { getNexDate, getInstance } = require('./../libs/cron');
 const { validationResult } = require('express-validator/check');
+const ModelSchedule = require('./../model/scheduleModel').getInstance();
+const Moment = require('moment');
 
 const model = new DB();
 
@@ -17,8 +19,7 @@ module.exports = {
     return async (req, res) => {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        req.flash('error', errors.array());
-        return res.redirect('/app/schedule/add');
+        return res.status(422).json({ errors: errors.array() });
       }
 
       const time = extractForm(req.body.time);
@@ -77,15 +78,17 @@ module.exports = {
       let no = 0;
       const scheduleData = await schedule.toArray();
       scheduleData.forEach((item) => {
+        let momentDate = Moment(getInstance(item._id).nextDates(1)[0]._d);
         data.push([
           ((no += 1) + start),
           item.name,
-          Date(getNexDate(item._id)),//eslint-disable-line
+          momentDate.format("YYYY-MM-DD HH:mm:ss"),
           this.getCategory(item.categories),
           item.account,
           getInstance(item._id).running ? 'running' : 'stopped',//eslint-disable-line
           `<button class='btn btn-sm btn-primary'><i class="fas fa-info-circle"></i> Info</button>&nbsp; 
                     <button class='btn btn-sm btn-primary' onClick="toggleService('${item._id}','${getInstance(item._id).running}')"><i class="fas ${getInstance(item._id).running ? 'fa-stop' : 'fa-play'}"></i></button>
+                    <button class='btn btn-sm btn-primary' onClick="deleteSchedule('${item._id}')"><i class="fas fa-trash    "></i></button>
                     `,
         ]);
       });
@@ -111,4 +114,15 @@ module.exports = {
     };
   },
 
+  deleteJX() {
+    return async (req, res) => {
+      const { scheduleId } = req.body;
+      try {
+        await ModelSchedule.deleteSchedule(scheduleId);
+      } catch (err) {
+        throw err;
+      }
+      res.json(true);
+    };
+  },
 };

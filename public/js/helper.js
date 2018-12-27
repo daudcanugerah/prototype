@@ -4,13 +4,13 @@ function setModalConfirm({
   if (elem === null) {
     elem = '<ul>';
     data.forEach((item) => {
-      console.log(item.param);
       elem += `<li>${item.param} - ${item.msg}</li>`;
     });
 
     elem += '</ul>';
   }
   $('#modal-confirm').modal('toggle');
+  $('#modal-confirm').css('z-index', 1050);
   $('#modal-confirm').find('.modal-body').html(elem);
   $('#modal-confirm').find('.modal-title').text(title);
   $('#submit').click(() => {

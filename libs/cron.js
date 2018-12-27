@@ -3,6 +3,8 @@ const Model = require('./../model/model');
 const CronJob = require('cron').CronJob;
 const { isset } = require('./helper');
 const Engine = require('./engine');
+var cronstrue = require('cronstrue');
+
 
 const DB = new Model();
 
@@ -10,16 +12,11 @@ const activeCron = {};
 
 const runCron = async () => {
   const cron = {};
-  const dbRequest = await DB.find({ collection: 'schedule', args: [{}] });
+  const dbRequest = await DB.find({ collection: 'schedule', args: [{ deleted_at: { $exists: false } }] });
   const tasks = await dbRequest.toArray();
   if (tasks.length > 0) {
-  // convert cron
-    for (let i = 0; i < tasks.length; i++) {
-      tasks[i].time = getCronFormat(tasks[i].time);
-    }
-
     tasks.forEach((item) => {
-      activeCron[item._id] = (() => new CronJob(item.time, (async () => {
+      activeCron[item._id] = (() => new CronJob(item.format, (async () => {
         console.log(`cron job runnint ${Date()}`);
         const engine = new Engine(item);
         engine.runEngine();
@@ -52,7 +49,7 @@ const startCron = (id = null) => {
   }
 };
 
-const stopCron =  (id = null) => {
+const stopCron = (id = null) => {
   if (isset(id)) {
     try {
       if (isset(activeCron[id])) {
@@ -80,7 +77,6 @@ const getNexDate = (id, priode = 1) => {
       const data = activeCron[id].nextDates(1);
       return data[0]._d;
     }
-    return false;
   } catch (err) {
     console.log(err);
   }
@@ -96,4 +92,4 @@ const getInstance = (id) => {
   }
 };
 
-module.exports = { runCron, getNexDate, getInstance };
+module.exports = { runCron, getNexDate, getInstance, startCron, stopCron };

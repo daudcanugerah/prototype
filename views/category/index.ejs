@@ -164,7 +164,7 @@
                         });                            
                         },
                         error : function(data){
-                          let {errors} = JSON.parse(data.responseText)
+                        let {errors} = JSON.parse(data.responseText)
                         setModalConfirm({
                             data : [...errors],
                             title : 'Error',

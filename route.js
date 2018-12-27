@@ -8,6 +8,7 @@ const {
 
 const app = express.Router();
 const { isset } = require('./libs/helper');
+const { startCron, stopCron } = require('./libs/cron');
 /**
  *  Route Datatables
  */
@@ -57,6 +58,7 @@ app.get('/schedule/stop/:id*?', (req, res, next) => {
   const response = isset(req.params.id) ? stopCron(req.params.id) : stopCron();
   res.json(response);
 });
+app.post('/schedule/deleteJX', schedule.deleteJX());
 
 
 /**

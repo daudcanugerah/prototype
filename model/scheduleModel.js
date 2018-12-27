@@ -1,7 +1,7 @@
 const Model = require('./model');
 
 class ScheduleModel extends Model {
-    constructor(){ //eslint-disable-line
+  constructor() { //eslint-disable-line
     super();
   }
 
@@ -32,7 +32,7 @@ class ScheduleModel extends Model {
   }
 
   async checkScheduleExist({ name = null, cronFormat = null }) {
-    const project = name === null ? { name: { $eq: ['$name', name] } } : { format: { $eq: ['$format', cronFormat] } };
+    const customfilter = name === null ? { name: { $eq: name } } : { format: { $eq: cronFormat } };
     try {
       const request = await this.aggregate(
         {
@@ -40,20 +40,39 @@ class ScheduleModel extends Model {
           args: [
             {
               $match: {
-                deleted_at: { $exists: false },
-              },
-            },
-            {
-              $project: {
-                project,
+                $and: [
+                  {
+                    deleted_at: { $exists: false },
+                  },
+                  customfilter,
+                ],
               },
             },
           ],
-        }
-);
+        },
+      );
       return request.toArray();
     } catch (err) {
       throw err;
+    }
+  }
+
+  async deleteSchedule(id) {
+    try {
+      await this.updateOne({
+        collection: 'schedule',
+        args: [{
+          _id: this.getObjectId(id),
+        },
+        {
+          $set: {
+            deleted_at: Date(),
+          },
+        },
+        ],
+      });
+    } catch (e) {
+      throw e;
     }
   }
 
@@ -69,17 +88,17 @@ class ScheduleModel extends Model {
             $set: { updated_at: Date() },
             $push: {
               posts:
-                {
-                  post_id: this.getObjectId(postId),
-                  account_id: this.getObjectId(accountId),
-                  tweet_id: tweetId,
-                  tweet,
-                  note: {
-                    message,
-                    code,
-                  },
-                  created_at,
+              {
+                post_id: this.getObjectId(postId),
+                account_id: this.getObjectId(accountId),
+                tweet_id: tweetId,
+                tweet,
+                note: {
+                  message,
+                  code,
                 },
+                created_at,
+              },
             },
           },
         ],

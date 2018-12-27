@@ -1,0 +1,116 @@
+<div class="modal fade" id="addCategory" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div style="max-width: 85%!important;" class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Category</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addSchedule">
+                    <div class="form-group row">
+                        <label class="col-md-2 col-form-label">Nama Schedule</label>
+                        <div class="col-md-10">
+                            <input type="text" name="name" class="form-control">
+                        </div>
+                    </div>
+                    <%- include("../partials/time",{className:"minute",name:"Menit"})   -%>
+                    <%- include("../partials/time",{className:"hour",name:"Jam"})   -%>
+                    <%- include("../partials/time",{className:"month",name:"Bulan"})   -%>
+                    <%- include("../partials/time",{className:"dayOfMonth",name:"Hari dalam sebulan"})   -%>
+                    <%- include("../partials/time",{className:"dayOfWeek",name:"Hari dalam seminggu"})   -%>
+                    <div class="form-group row range">
+                        <label class="col-md-2">kategori</label>
+                        <div class="col-md-10">
+                            <select class="js-example-basic-multiple category" style="width: 100%" name="states[]" multiple="multiple">
+                               
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row range">
+                        <label class="col-md-2">Jumlah Account</label>
+                        <div class="col-md-10">
+                            <input type="range" name="account" class="custom-range" id="formControlRange">
+                            <p class="range-param"></p>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn-add btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    AddSchedule('minute');
+    AddSchedule('hour');
+    AddSchedule('month');
+    AddSchedule('dayOfMonth');
+    AddSchedule('dayOfWeek');
+    $('.selectpicker').selectpicker();
+
+    $(".btn-add").click(function () {
+        $.ajax({
+            url: '/app/schedule/addAction',
+            type: 'POST',
+            data: $("#addSchedule").serializeArray(),
+            success: function (data) {
+                setModalInfo({
+                    elem: '<h4>Add Success</h4>',
+                    title: 'Info'
+                });
+                $('#addCategory').modal('toggle');
+                DT.ajax.reload();
+            },
+            error(data) {
+                let { errors } = JSON.parse(data.responseText)
+                setModalConfirm({
+                    data: [...errors],
+                    title: 'Error',
+                });
+            }
+        });
+    });
+
+    $.ajax({
+        url: '/app/category/getCategoryJX',
+        type: 'GET',
+        processData: false,
+        contentType: false,
+        success: function (data) {
+          
+            let checkbox = '';
+            data.forEach(items => {
+                checkbox += elem(items);
+            });
+            checkbox += "</div>"
+            $('.category').append(checkbox);
+        },
+    });
+    var countAccount = 0;
+    $.ajax({
+        url: '/app/account/getCountJX',
+        type: 'GET',
+        processData: false,
+        contentType: false,
+        success: function (data) {
+            countAccount = data;
+            $('input[type="range"]').attr('max', data);
+            $('input[type="range"]').attr('value', 0);
+            $('.range-param').html(0 + "/" + countAccount);
+        },
+    });
+
+    $('input[type="range"]').on('input change', function () {
+        $('.range-param').html($(this).val() + "/" + countAccount);
+    });
+
+    var countArray = 0;
+    $(document).on("change", "input#category-checkbox", function () {
+        let num = Number($(this).attr('data-id'));
+        countArray += this.checked ? num : (num * (-1));
+    });
+</script>
