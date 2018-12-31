@@ -23,8 +23,7 @@
                     <div class="form-group row range">
                         <label class="col-md-2">kategori</label>
                         <div class="col-md-10">
-                            <select class="js-example-basic-multiple category" style="width: 100%" name="states[]" multiple="multiple">
-                               
+                            <select class="js-example-basic-multiple category" style="width: 100%" name="category_id[]" multiple="multiple">
                             </select>
                         </div>
                     </div>
@@ -74,20 +73,19 @@
             }
         });
     });
-
+    // set category item
     $.ajax({
         url: '/app/category/getCategoryJX',
         type: 'GET',
         processData: false,
         contentType: false,
         success: function (data) {
-          
-            let checkbox = '';
+            let option = '';
             data.forEach(items => {
-                checkbox += elem(items);
+               option += `<option value="${items._id}">${items.name}-${items.countArray}</option>`;
             });
-            checkbox += "</div>"
-            $('.category').append(checkbox);
+            console.log(option);
+            $('.js-example-basic-multiple.category').append(option);
         },
     });
     var countAccount = 0;
