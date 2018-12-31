@@ -1,7 +1,7 @@
 {
   "scripts": {
     "start": "pm2-runtime start ecosystem.config.js --env production",
-    "devstart": "nodemon server.js"
+    "devstart": "nodemon NODE_ENV=development server.js"
   },
   "dependencies": {
     "bcrypt": "^3.0.2",
@@ -9,6 +9,7 @@
     "cron": "^1.6.0",
     "cronstrue": "^1.58.0",
     "dotenv": "^6.1.0",
+    "dotenv-flow": "^0.2.0",
     "ejs": "^2.6.1",
     "eslint": "^4.19.1",
     "eslint-config-airbnb-base": "^13.1.0",

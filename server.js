@@ -1,7 +1,8 @@
-require('dotenv').config();
+require('dotenv-flow').config({
+  node_env: process.env.NODE_ENV || 'development',
+});
 const express = require('express');
 const flash = require('express-flash');
-
 const path = require('path');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
@@ -27,7 +28,7 @@ const middleware = [
     saveUninitialized: true,
     resave: false,
     secret: process.env.APP_SECRET_AUTH,
-    cookie: { maxAge: 10 * 60 * 1000,},
+    cookie: { maxAge: 10 * 60 * 1000, },
   }),
   flash(),
 ];
@@ -68,8 +69,8 @@ app.get('*', (req, res) => {
 });
 
 
-const port = process.env.PORT || 3000;
-app.listen(port, '0.0.0.0', async () => {
+const port = process.env.APP_PORT || process.env.PORT;
+app.listen(port, async () => {
   console.log(`Listening on Port ${port}`);
   try {
     await connect();
