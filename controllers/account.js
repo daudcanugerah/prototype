@@ -87,13 +87,13 @@ class Account extends Twitter {
             credentialParse.updated_at = Date();
             credentials = { credentials, ...credentialParse };
           } catch (err) {
-            console.log(err);
+            throw err;
           }
         }
         await this.model.updateMany({ collection: 'account', args: [{}, { $set: { ...credentials } }, { $upsert: true }] });
         res.json(credentials);
       } catch (err) {
-        console.log(err);
+        throw err;
       }
     };
   }

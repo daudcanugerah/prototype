@@ -20,7 +20,7 @@ const { auth } = require('./controllers/index');
 const middleware = [
   bodyParser.json(),
   bodyParser.urlencoded({ extended: true }),
-  morgan('combined'),
+  // morgan('combined'),
   session({
     store: new MemoryStore({
       checkPeriod: 86400000,

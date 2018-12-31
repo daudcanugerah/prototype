@@ -22,6 +22,7 @@ class EngineTwitter extends TwitterModel {
     this.log = await ScheduleModel.createLog(this.schedule._id.toString()); //eslint-disable-line
     this.schedule.type.map((type) => {
       for (let i = 0; i < this.account.length; i += 1) {
+        console.log(`log info. running  account ${this.account[i]}`);
         this.generateSchedule({
           type,
           ...this.account[i],
@@ -31,7 +32,7 @@ class EngineTwitter extends TwitterModel {
   }
 
   async getRandomAccount() {
-    const requestAccount = await this.model.aggregate({ collection: 'account', args: [{ $sample: { size: 1 } }] });
+    const requestAccount = await this.model.aggregate({ collection: 'account', args: [{ $sample: { size: Number(this.schedule.account) } }] });
     const account = await requestAccount.toArray();
     this.account = account;
   }
@@ -49,12 +50,15 @@ class EngineTwitter extends TwitterModel {
   /* eslint-disable no-underscore-dangle */
   async runPost({ token, tokenSecret, _id }) {
     try {
+      // change all _id mongo in post category list scehule to string
       const categoryId = Object.values(this.schedule.category_id).map(e => e._id.toString());
+      // get sample post by category ID
       const post = await PostModel.getSamplePost(categoryId).then(e => e.toArray());
       const {
         id_str = null, created_at = Date(), message = 'succes', code = 200,
-      } = await this.updateStatus({ status: 'haii', token, tokenSecret });
+      } = await this.updateStatus({ status: post, token, tokenSecret });
       // Create Log Post
+      console.log(`log info. generate Post ${code === 200}`);
       ScheduleModel.createLogPost({
         logId: this.log.ops[0]._id.toString(),
         postId: post[0]._id.toString(),

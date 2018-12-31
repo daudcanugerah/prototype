@@ -18,7 +18,7 @@ class AccountModel extends Model {
       const request = await db.collection(DEFAULT_COLLECTION).find({ args });
       return request.toArray();
     } catch (err) {
-      console.log(err);
+      throw err;
     }
   }
 
@@ -28,7 +28,7 @@ class AccountModel extends Model {
       const request = await db.collection(DEFAULT_COLLECTION).find({ skip, limit });
       return request.toArray();
     } catch (err) {
-      console.log(err);
+      throw err;
     }
   }
 
@@ -45,7 +45,7 @@ class AccountModel extends Model {
       }
       return request;
     } catch (err) {
-      console.log(err);
+      throw err;
     }
   }
 }

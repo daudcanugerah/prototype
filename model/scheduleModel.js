@@ -13,7 +13,7 @@ class ScheduleModel extends Model {
     try {
       const requestInsert = await this.insertOne(
         {
-          collection: 'Schedule_Log',
+          collection: 'schedule_log',
           args: [
             {
               schedule_id: this.getObjectId(scheduleId),
@@ -24,7 +24,7 @@ class ScheduleModel extends Model {
           ],
         },
       );
-      console.log(requestInsert);
+      console.log(`log for schedule Id ${scheduleId} created`);
       return requestInsert;
     } catch (err) {
       throw err;
@@ -81,7 +81,7 @@ class ScheduleModel extends Model {
   }) {
     try {
       const requestInsert = await this.updateOne({
-        collection: 'Schedule_Log',
+        collection: 'schedule_log',
         args: [
           { _id: this.getObjectId(logId) },
           {

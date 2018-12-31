@@ -3,7 +3,7 @@ const Model = require('./../model/model');
 const CronJob = require('cron').CronJob;
 const { isset } = require('./helper');
 const Engine = require('./engine');
-var cronstrue = require('cronstrue');
+const cronstrue = require('cronstrue');
 
 
 const DB = new Model();
@@ -22,6 +22,7 @@ const runCron = async () => {
         engine.runEngine();
       })))();
     });
+    startCron('5c298d9b691be535aa835bc5');
     return cron;
   }
 };
@@ -35,7 +36,7 @@ const startCron = (id = null) => {
       }
       return false;
     } catch (err) {
-      console.log(err);
+      throw err;
     }
   } else {
     try {
@@ -58,7 +59,7 @@ const stopCron = (id = null) => {
       }
       return false;
     } catch (err) {
-      console.log(err);
+      throw err;
     }
   } else {
     try {
@@ -78,18 +79,20 @@ const getNexDate = (id, priode = 1) => {
       return data[0]._d;
     }
   } catch (err) {
-    console.log(err);
+    throw err;
   }
 };
+
 const getInstance = (id) => {
   try {
     if (isset(activeCron[id])) {
       return activeCron[id];
     }
-    return false;
   } catch (err) {
-    console.log(err);
+    throw err;
   }
 };
 
-module.exports = { runCron, getNexDate, getInstance, startCron, stopCron };
+module.exports = {
+  runCron, getNexDate, getInstance, startCron, stopCron,
+};

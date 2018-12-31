@@ -12,7 +12,7 @@ class Token extends Twitter {
         const { requestToken } = await this.getOAuthRequestToken();
         res.json({ oAuthToken: requestToken });
       } catch (err) {
-        console.log(err.message);
+        throw err;
       }
     };
   }
@@ -30,7 +30,7 @@ class Token extends Twitter {
         res.render('account/response', { message: 'success' });
       } catch (err) {
         const error = err;
-        console.log(err);
+        throw err;
         res.render('account/response', { message: error });
       }
     };
