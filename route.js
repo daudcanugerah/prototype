@@ -48,12 +48,14 @@ app.get('/category', category.index());
  */
 
 app.get('/schedule/add', schedule.add());
+app.post('/schedule/getSchedule', schedule.getSchedule());
 app.post('/schedule/addAction', scheduleValidator.addScheduleValidator(), schedule.addAction());
 app.get('/schedule', schedule.index());
 app.get('/schedule/start/:id*?', (req, res, next) => {
   const response = isset(req.params.id) ? startCron(req.params.id) : startCron();
   res.json(response);
 });
+
 app.get('/schedule/stop/:id*?', (req, res, next) => {
   const response = isset(req.params.id) ? stopCron(req.params.id) : stopCron();
   res.json(response);

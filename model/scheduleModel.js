@@ -31,6 +31,40 @@ class ScheduleModel extends Model {
     }
   }
 
+  /**
+   * @method updateSchedule()
+   * @param Object name -> String |
+   * @desc update schedule
+   * @return Promises
+   */
+  async updateSchedule({ categoryId, account, type }) {
+    // convert to format array object
+    const localCategoryId = [];
+    categoryId.forEach((item) => {
+      localCategoryId.push({
+        _id: this.getObjectId(item),
+      });
+    });
+    try {
+      const request = await this.updateOne({
+        collection: 'category',
+        args: [
+          { _id: this.getObjectId(categoryId) },
+          {
+            $set: {
+              type,
+              account,
+              category_id: localCategoryId,
+            },
+          },
+        ],
+      });
+      return request;
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async checkScheduleExist({ name = null, cronFormat = null }) {
     const customfilter = name === null ? { name: { $eq: name } } : { format: { $eq: cronFormat } };
     try {
@@ -42,7 +76,7 @@ class ScheduleModel extends Model {
               $match: {
                 $and: [
                   {
-                    deleted_at: { $exists: false },
+                    deleted_at: { $existss: false },
                   },
                   customfilter,
                 ],
@@ -54,25 +88,6 @@ class ScheduleModel extends Model {
       return request.toArray();
     } catch (err) {
       throw err;
-    }
-  }
-
-  async deleteSchedule(id) {
-    try {
-      await this.updateOne({
-        collection: 'schedule',
-        args: [{
-          _id: this.getObjectId(id),
-        },
-        {
-          $set: {
-            deleted_at: Date(),
-          },
-        },
-        ],
-      });
-    } catch (e) {
-      throw e;
     }
   }
 
@@ -104,6 +119,64 @@ class ScheduleModel extends Model {
         ],
       });
       return requestInsert;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async getSchedule({ id = null, deleted = false, extra }) {
+    const filterId = id == null ? {} : { _id: this.getObjectId(id) };
+    const filterDeleted = deleted === false ? { deleted_at: { $exists: false } } : { deleted_at: { $exists: true } };
+    try {
+      const request = await this.aggregate(
+        {
+          collection: 'schedule',
+          args: [
+            {
+              $match: {
+                $and: [
+                  filterId,
+                  filterDeleted,
+                ],
+              },
+            },
+            {
+              $lookup: {
+                from: 'category',
+                localField: 'category_id._id',
+                foreignField: '_id',
+                as: 'categories',
+              },
+            },
+            {
+              $project: {
+                _id: 1,
+                name: 1,
+                type: 1,
+                account: 1,
+                extra,
+                categories: 1,
+              },
+            },
+          ],
+        },
+      );
+      return request.toArray();
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  /**
+   * @method deleteSchedule()
+   * @param String scheduleId
+   * @desc menghapus schedule berdasarkan ID
+   * @return Promises
+   */
+  async deleteSchedule(scheduleId) {
+    try {
+      const request = await this.updateOne({ collection: 'schedule', args: [{ _id: this.getObjectId(scheduleId) }, { $set: { deleted_at: Date() } }] });
+      return request;
     } catch (err) {
       throw err;
     }

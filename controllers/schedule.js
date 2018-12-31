@@ -1,5 +1,5 @@
 const { ObjectId } = require('mongodb');
-const { extractForm, getCronFormat } = require('./../libs/helper');
+const { extractForm, isset, getCronFormat } = require('./../libs/helper');
 const DB = require('./../model/model');
 const { getNexDate, getInstance } = require('./../libs/cron');
 const { validationResult } = require('express-validator/check');
@@ -24,26 +24,38 @@ module.exports = {
 
       const time = extractForm(req.body.time);
       const {
-        name, category_id, schedule, account,
+        name, categoryId, account,
       } = req.body;
 
       // nomalkan bentukk category_id, dari array menjadi array object
-      category_id.forEach((item, i) => { category_id[i] = { _id: ObjectId(item) }; });
+      categoryId.forEach((item, i) => { categoryId[i] = { _id: ObjectId(item) }; });
 
       try {
         await model.insertOne({
           collection: 'schedule',
           args: [{
-            name, type: ['post'], account, category_id, time: [time], format: getCronFormat(time),
+            name, type: ['post'], account, category_id: categoryId, time: [time], format: getCronFormat(time),
           }],
         });
       } catch (err) {
-        throw(err);
+        throw (err);
       }
       return res.redirect('/app/schedule');
     };
   },
-
+  getSchedule() {
+    return async (req, res) => {
+      try {
+        const data = await ModelSchedule.getSchedule({
+          id: isset(req.body.id) ? req.body.id : null,
+          deleted: isset(req.body.deleted),
+        });
+        res.json(data);
+      } catch (e) {
+        throw e;
+      }
+    };
+  },
   getScheduleDTLS() {
     return async (req, res) => {
       const { draw } = req.query;
@@ -78,17 +90,18 @@ module.exports = {
       let no = 0;
       const scheduleData = await schedule.toArray();
       scheduleData.forEach((item) => {
-        let momentDate = Moment(getInstance(item._id).nextDates(1)[0]._d);
+        const momentDate = Moment(getInstance(item._id).nextDates(1)[0]._d);
         data.push([
           ((no += 1) + start),
           item.name,
-          momentDate.format("YYYY-MM-DD HH:mm:ss"),
+          momentDate.format('YYYY-MM-DD HH:mm:ss'),
           this.getCategory(item.categories),
           item.account,
           getInstance(item._id).running ? 'running' : 'stopped',//eslint-disable-line
           `<button class='btn btn-sm btn-primary'><i class="fas fa-info-circle"></i> Info</button>&nbsp; 
                     <button class='btn btn-sm btn-primary' onClick="toggleService('${item._id}','${getInstance(item._id).running}')"><i class="fas ${getInstance(item._id).running ? 'fa-stop' : 'fa-play'}"></i></button>
-                    <button class='btn btn-sm btn-primary' onClick="deleteSchedule('${item._id}')"><i class="fas fa-trash    "></i></button>
+                    <button class='btn btn-sm btn-primary' onClick='updateSchedule(${JSON.stringify({ id: item._id })})'><i class="fas fa-pencil-alt    "></i></button>
+                    <button class='btn btn-sm btn-primary' onClick="deleteSchedule('${item._id}')"><i class="fas fa-trash  "></i></button>
                     `,
         ]);
       });
@@ -123,6 +136,24 @@ module.exports = {
         throw err;
       }
       res.json(true);
+    };
+  },
+  update(jx = false) {
+    return async (req, res) => {
+      const errors = validationResult(req);
+      if (!errors.isEmpty() && jx === true) {
+        return res.status(422).json({ errors: errors.array() });
+      }
+      const { account, type, categoryId } = req.body;
+      try {
+        await ModelSchedule.updateSchedule({
+          account,
+          categoryId,
+          type,
+        });
+      } catch (e) {
+        throw (e);
+      }
     };
   },
 };

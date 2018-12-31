@@ -45,7 +45,7 @@ class scheduleValidator {
           },
         },
       },
-      category_id: {
+      categoryId: {
         isEmpty: {
           errorMessage: 'category canot empty',
           negated: true,
@@ -62,7 +62,7 @@ class scheduleValidator {
     });
   }
 
-  static updateScheduleValidator() {
+  static update() {
     return checkSchema({
       name: {
         isLength: {
@@ -82,7 +82,7 @@ class scheduleValidator {
           },
         },
       },
-      category_id: {
+      categoryId: {
         isEmpty: {
           errorMessage: 'category canot empty',
           negated: true,

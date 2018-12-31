@@ -22,7 +22,6 @@ const runCron = async () => {
         engine.runEngine();
       })))();
     });
-    startCron('5c298d9b691be535aa835bc5');
     return cron;
   }
 };
