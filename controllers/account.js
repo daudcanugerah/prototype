@@ -56,7 +56,7 @@ class Account extends Twitter {
     if (item.suspended) {
       status += '<span class="badge badge-secondary">Suspend</span>';
     } else if (item.needs_phone_verification) {
-      status += '<span class="badge badge-secondary">Suspend</span>';
+      status += '<span class="badge badge-secondary">Need Verification</span>';
     } else {
       status += '<span class="badge badge-secondary">Active</span>';
     }
@@ -89,7 +89,7 @@ class Account extends Twitter {
             throw err;
           }
         }
-        res.sendStatus(200).json('ok');
+        res.sendStatus(200);
       } catch (err) {
         throw err;
       }
