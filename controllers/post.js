@@ -7,7 +7,7 @@ class Post {
      */
   index() {
     return async (req, res) => {
-      res.render('post/index.ejs', { linkTarget: 'post'});
+      res.render('post/index.ejs', { linkTarget: 'post' });
     };
   }
 
@@ -52,7 +52,7 @@ class Post {
       const postData = await post.toArray();
       postData.forEach((item) => {
         data.push([
-          ((++no) + start),
+          ((no += 1) + start),
           `**${String(item._id).substr(20)}`,
           item.content,
           item.media == null ? 'Not Avaible' : item.media,
@@ -93,7 +93,6 @@ class Post {
       //     console.log(req.body);
       //     return res.status(422).json({ errors: errors.array() });
       // // }
-
       // console.log(req.local);
       res.send({ body: req.body, file: req.file });
     };

@@ -1,6 +1,6 @@
 const { checkSchema } = require('express-validator/check');
+const { CronJob } = require('cron');
 const { extractForm, getCronFormat } = require('./../libs/helper');
-const CronJob = require('cron').CronJob;
 const Model = require('../model/scheduleModel').getInstance();
 
 class scheduleValidator {
@@ -29,9 +29,7 @@ class scheduleValidator {
           options: async (value) => {
             try {
               const cron = getCronFormat(extractForm(value));
-              new CronJob(cron, () => {
-                console.log('a');
-              });
+              new CronJob(cron, () => {});
             } catch (e) {
               return Promise.reject('Cron Format Not Valid');
             }
