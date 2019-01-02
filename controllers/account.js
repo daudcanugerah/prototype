@@ -79,19 +79,17 @@ class Account extends Twitter {
       try {
         const response = await this.model.find({ collection: 'account', args: [{}] });
         const data = await response.toArray();
-        let credentials = {};
         for (let i = 0; i < data.length; i++) {
           try {
             const credential = await this.verifyCredentials({ token: data[i].token, tokenSecret: data[i].tokenSecret });
             const credentialParse = JSON.parse(credential);
-            let curentAccount = {twitter_id: credentialParse.id_str, profile: { ...credentialParse }, token: data[i].token, tokenSecret: data[i].tokenSecret, updated_at: Date()};
-            credentials = { credentials, ...curentAccount };
+            let curentAccount = {profile: { ...credentialParse }, token: data[i].token, tokenSecret: data[i].tokenSecret, updated_at: Date()};
+            await this.model.updateOne({ collection: 'account', args: [{twitter_id: credentialParse.id_str}, { $set: { ...curentAccount } }, { $upsert: true }] });
           } catch (err) {
             throw err;
           }
         }
-        await this.model.updateMany({ collection: 'account', args: [{}, { $set: { ...credentials } }, { $upsert: true }] });
-        res.json(credentials);
+        res.sendStatus(200).json('ok');
       } catch (err) {
         throw err;
       }
