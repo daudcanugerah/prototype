@@ -1,5 +1,5 @@
 /node_modules
 /kamus
 /.vscode
-.env
-.env.development
+/.env
+/.env.development
