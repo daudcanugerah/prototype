@@ -22,7 +22,7 @@ class EngineTwitter extends TwitterModel {
     this.log = await ScheduleModel.createLog(this.schedule._id.toString()); //eslint-disable-line
     this.schedule.type.map((type) => {
       for (let i = 0; i < this.account.length; i += 1) {
-        console.log(`log info. running  account ${this.account[i]}`);
+        console.log(`log info. running  account ${this.account[i].profile.name}`);
         this.generateSchedule({
           type,
           ...this.account[i],
@@ -50,15 +50,17 @@ class EngineTwitter extends TwitterModel {
   /* eslint-disable no-underscore-dangle */
   async runPost({ token, tokenSecret, _id }) {
     try {
-      // change all _id mongo in post category list scehule to string
+      // change all _id mongo in post category, to string
       const categoryId = Object.values(this.schedule.category_id).map(e => e._id.toString());
       // get sample post by category ID
-      const post = await PostModel.getSamplePost(categoryId).then(e => e.toArray());
+      const post = await PostModel.getSamplePost(categoryId);
+      console.log(`log info. post ${post[0].content}`);
+      // if log empty
       const {
         id_str = null, created_at = Date(), message = 'succes', code = 200,
-      } = await this.updateStatus({ status: post, token, tokenSecret });
+      } = await this.updateStatus({ status: post[0].content, token, tokenSecret });
       // Create Log Post
-      console.log(`log info. generate Post ${code === 200}`);
+      console.log(`log info. status Post ${code === 200}`);
       ScheduleModel.createLogPost({
         logId: this.log.ops[0]._id.toString(),
         postId: post[0]._id.toString(),

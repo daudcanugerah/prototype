@@ -12,10 +12,10 @@ class AccountModel extends Model {
     return new AccountModel();
   }
 
-  async getAccounts(...args) {
+  async getAccounts(args) {
     try {
       const db = await getDb();
-      const request = await db.collection(DEFAULT_COLLECTION).find({ args });
+      const request = await db.collection(DEFAULT_COLLECTION).find(args);
       return request.toArray();
     } catch (err) {
       throw err;
@@ -35,13 +35,14 @@ class AccountModel extends Model {
   async setCredential(data) {
     try {
       const db = await getDb();
-      const userExist = await this.getAccounts({
-        id_str: data.id_str,
+      let request;
+      const accountExist = await this.getAccounts({
+        twitter_id: data.twitter_id,
       });
-      if (userExist) {
-        const request = await db.collection(DEFAULT_COLLECTION).updateOne({ id_str: data.id_str }, { $set: { ...data } }, { upsert: true });
+      if (accountExist.length > 0) {
+        request = await db.collection(DEFAULT_COLLECTION).updateOne({ twitter_id: data.twitter_id }, { $set: { ...data } }, { upsert: true });
       } else {
-        const request = await db.collection(DEFAULT_COLLECTION).insertOne(data);
+        request = await db.collection(DEFAULT_COLLECTION).insertOne(data);
       }
       return request;
     } catch (err) {

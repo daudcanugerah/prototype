@@ -8,7 +8,7 @@ const cronstrue = require('cronstrue');
 
 const DB = new Model();
 
-const activeCron = {};
+let activeCron = {};
 
 const runCron = async () => {
   const cron = {};
@@ -24,6 +24,11 @@ const runCron = async () => {
     });
     return cron;
   }
+};
+
+const reloadCron = async () => {
+  activeCron = {};
+  await runCron();
 };
 
 const startCron = (id = null) => {
@@ -93,5 +98,5 @@ const getInstance = (id) => {
 };
 
 module.exports = {
-  runCron, getNexDate, getInstance, startCron, stopCron,
+  runCron, getNexDate, getInstance, startCron, stopCron, reloadCron,
 };

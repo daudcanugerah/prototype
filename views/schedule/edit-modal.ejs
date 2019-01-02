@@ -1,92 +1,99 @@
-<div class="modal fade" id="addCategory" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div style="max-width: 85%!important;" class="modal-dialog modal-lg" role="document">
+<div class="modal fade" id="updateSchedule" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Add Category</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Update Schedule</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <form id="editSchedule">
+                <form id="formUpdateSchedule">
                     <div class="form-group row">
                         <label class="col-md-2 col-form-label">Nama Schedule</label>
                         <div class="col-md-10">
-                            <input type="text" name="name" class="form-control">
+                            <input type="text" name="name" class="form-control name-update">
                         </div>
                     </div>
                     <div class="form-group row range">
                         <label class="col-md-2">kategori</label>
                         <div class="col-md-10">
-                            <select class="js-example-basic-multiple category" style="width: 100%" name="category_id[]" multiple="multiple">
+                            <select class="js-example-basic-multiple option-update" style="width: 100%" name="categoryId[]"
+                                multiple="multiple">
                             </select>
                         </div>
                     </div>
                     <div class="form-group row range">
                         <label class="col-md-2">Jumlah Account</label>
                         <div class="col-md-10">
-                            <input type="range" name="account" class="custom-range" id="formControlRange">
-                            <p class="range-param"></p>
+                            <input type="range" name="account" class="custom-range range-update" id="formControlRange">
+                            <p class="range-param-update"></p>
                         </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn-add btn btn-primary">Save changes</button>
+                <button type="button" class="btn-update btn btn-primary">Save changes</button>
             </div>
         </div>
     </div>
 </div>
 <script>
-    $('.selectpicker').selectpicker();
 
-    function updateSchedule(id){
-        console.log(id);
+    function updateSchedule(data) {
         $.ajax({
-        url: '/app/schedule/getSchedule',
-        type: 'POST',
-        success: function (data) {
-            console.log(data);
-        },
+            url: '/app/schedule/getSchedule',
+            type: 'POST',
+            data: {
+                id: data.id
+            },
+            success: function (response) {
+                let selectedCategory = response[0].categories;
+                // set option
+                $('.js-example-basic-multiple.option-update').select2({});
+                let curentData = [];
+                console.log(curentData);
+                category.forEach(item => {
+                    var newOption = new Option(`${item.name}`, item._id, false, selectedCategory.map(e => e._id).indexOf(item._id) >= 0 ? true : false);
+                    $('.js-example-basic-multiple.option-update').append(newOption).trigger('change');
+                });
+                // set user range
+            $('.range-update').attr('max', countAccount);
+            $('.range-update').attr('value', response[0].account);
+            $('.range-param-update').html(0 + "/" + countAccount);
+            // set name
+            $('.name-update').attr('value',response[0].name);
+            // set hidden field for scheduleId
+            $('<input>').attr('type','hidden').attr('name','scheduleId').attr('value',response[0]._id).appendTo('#formUpdateSchedule');
+            $('#updateSchedule').modal('toggle');
+            },
+        });
+    }
+    $('.range-update').on('input change', function () {
+        $('.range-param-update').html($(this).val() + "/" + countAccount);
     });
-    }    
-    // // set category item
-    // $.ajax({
-    //     url: '/app/category/getCategoryJX',
-    //     type: 'GET',
-    //     processData: false,
-    //     contentType: false,
-    //     success: function (data) {
-    //         let option = '';
-    //         data.forEach(items => {
-    //            option += `<option value="${items._id}">${items.name}-${items.countArray}</option>`;
-    //         });
-    //         console.log(option);
-    //         $('.js-example-basic-multiple.category').append(option);
-    //     },
-    // });
-    // var countAccount = 0;
-    // $.ajax({
-    //     url: '/app/account/getCountJX',
-    //     type: 'GET',
-    //     processData: false,
-    //     contentType: false,
-    //     success: function (data) {
-    //         countAccount = data;
-    //         $('input[type="range"]').attr('max', data);
-    //         $('input[type="range"]').attr('value', 0);
-    //         $('.range-param').html(0 + "/" + countAccount);
-    //     },
-    // });
 
-    // $('input[type="range"]').on('input change', function () {
-    //     $('.range-param').html($(this).val() + "/" + countAccount);
-    // });
-
-    // var countArray = 0;
-    // $(document).on("change", "input#category-checkbox", function () {
-    //     let num = Number($(this).attr('data-id'));
-    //     countArray += this.checked ? num : (num * (-1));
-    // });
+    $(".btn-update").click(function () {
+        $.ajax({
+        url: '/app/schedule/update',
+            type: 'POST',
+            data: $("#formUpdateSchedule").serializeArray(),
+            success: function (data) {
+                setModalInfo({
+                    elem: '<h4>update Success</h4>',
+                    title: 'Info'
+                });
+                $('#updateSchedule').modal('toggle');
+                DT.ajax.reload();
+            },
+            error(data) {
+                let { errors } = JSON.parse(data.responseText)
+                setModalConfirm({
+                    data: [...errors],
+                    title: 'Error',
+                });
+            }
+        });
+    });
 </script>

@@ -37,7 +37,9 @@ class ScheduleModel extends Model {
    * @desc update schedule
    * @return Promises
    */
-  async updateSchedule({ categoryId, account, type }) {
+  async updateSchedule({
+    categoryId, account, type, name, scheduleId,
+  }) {
     // convert to format array object
     const localCategoryId = [];
     categoryId.forEach((item) => {
@@ -47,11 +49,12 @@ class ScheduleModel extends Model {
     });
     try {
       const request = await this.updateOne({
-        collection: 'category',
+        collection: 'schedule',
         args: [
-          { _id: this.getObjectId(categoryId) },
+          { _id: this.getObjectId(scheduleId) },
           {
             $set: {
+              name,
               type,
               account,
               category_id: localCategoryId,
@@ -76,7 +79,7 @@ class ScheduleModel extends Model {
               $match: {
                 $and: [
                   {
-                    deleted_at: { $existss: false },
+                    deleted_at: { $exists: false },
                   },
                   customfilter,
                 ],

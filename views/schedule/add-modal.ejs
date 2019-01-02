@@ -23,7 +23,8 @@
                     <div class="form-group row range">
                         <label class="col-md-2">kategori</label>
                         <div class="col-md-10">
-                            <select class="js-example-basic-multiple category" style="width: 100%" name="category_id[]" multiple="multiple">
+                            <select class="js-example-basic-multiple option-add" style="width: 100%" name="categoryId[]"
+                                multiple="multiple">
                             </select>
                         </div>
                     </div>
@@ -49,7 +50,6 @@
     AddSchedule('month');
     AddSchedule('dayOfMonth');
     AddSchedule('dayOfWeek');
-    $('.selectpicker').selectpicker();
 
     $(".btn-add").click(function () {
         $.ajax({
@@ -58,11 +58,13 @@
             data: $("#addSchedule").serializeArray(),
             success: function (data) {
                 setModalInfo({
-                    elem: '<h4>Add Success</h4>',
+                    elem: '<h4>Add Success, Restart Schedule</h4>',
                     title: 'Info'
                 });
                 $('#addCategory').modal('toggle');
-                DT.ajax.reload();
+                // reload cron
+                reloadCron();
+                DT.ajax.reload();                    
             },
             error(data) {
                 let { errors } = JSON.parse(data.responseText)
@@ -73,42 +75,5 @@
             }
         });
     });
-    // set category item
-    $.ajax({
-        url: '/app/category/getCategoryJX',
-        type: 'GET',
-        processData: false,
-        contentType: false,
-        success: function (data) {
-            let option = '';
-            data.forEach(items => {
-               option += `<option value="${items._id}">${items.name}-${items.countArray}</option>`;
-            });
-            console.log(option);
-            $('.js-example-basic-multiple.category').append(option);
-        },
-    });
-    var countAccount = 0;
-    $.ajax({
-        url: '/app/account/getCountJX',
-        type: 'GET',
-        processData: false,
-        contentType: false,
-        success: function (data) {
-            countAccount = data;
-            $('input[type="range"]').attr('max', data);
-            $('input[type="range"]').attr('value', 0);
-            $('.range-param').html(0 + "/" + countAccount);
-        },
-    });
 
-    $('input[type="range"]').on('input change', function () {
-        $('.range-param').html($(this).val() + "/" + countAccount);
-    });
-
-    var countArray = 0;
-    $(document).on("change", "input#category-checkbox", function () {
-        let num = Number($(this).attr('data-id'));
-        countArray += this.checked ? num : (num * (-1));
-    });
 </script>

@@ -36,3 +36,22 @@ function setModalInfo({
     $('#modal-info').modal('toggle');
   }, 1000);
 }
+
+function reloadCron() {
+  $.ajax({
+    url: '/app/schedule/reload',
+    type: 'GET',
+    success () {
+        setModalInfo({
+            elem: '<h4>Restart Schedule Success</h4>',
+            title: 'Info'
+        });
+    },
+    error () {
+        setModalInfo({
+            elem: '<h4>Restart Schedule Fail</h4>',
+            title: 'Info'
+        });
+    },
+  });
+}

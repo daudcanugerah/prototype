@@ -8,7 +8,7 @@ const {
 
 const app = express.Router();
 const { isset } = require('./libs/helper');
-const { startCron, stopCron } = require('./libs/cron');
+const { startCron, stopCron, reloadCron } = require('./libs/cron');
 /**
  *  Route Datatables
  */
@@ -50,7 +50,16 @@ app.get('/category', category.index());
 app.get('/schedule/add', schedule.add());
 app.post('/schedule/getSchedule', schedule.getSchedule());
 app.post('/schedule/addAction', scheduleValidator.addScheduleValidator(), schedule.addAction());
+app.post('/schedule/update', scheduleValidator.update(), schedule.update());
 app.get('/schedule', schedule.index());
+app.get('/schedule/reload', async (req, res, next) => {
+  try {
+    await reloadCron();
+    res.json(200);
+  } catch (err) {
+    throw err;
+  }
+});
 app.get('/schedule/start/:id*?', (req, res, next) => {
   const response = isset(req.params.id) ? startCron(req.params.id) : startCron();
   res.json(response);

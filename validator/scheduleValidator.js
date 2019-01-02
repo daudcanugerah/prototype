@@ -88,6 +88,12 @@ class scheduleValidator {
           negated: true,
         },
       },
+      scheduleId: {
+        isEmpty: {
+          errorMessage: 'schduleId canot empty',
+          negated: true,
+        },
+      },
       account: {
         isLength: {
           errorMessage: 'account canot empty',

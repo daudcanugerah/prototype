@@ -25,7 +25,7 @@ class PostModel extends Model {
           { $sample: { size: 1 } },
         ],
       });
-      return requestQuery;
+      return requestQuery.toArray();
     } catch (err) {
       throw err;
     }

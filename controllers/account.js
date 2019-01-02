@@ -33,9 +33,9 @@ class Account extends Twitter {
       accountData.forEach((item) => {
         data.push([
           ((++no) + start),
-          item.id_str,
-          item.screen_name,
-          this.getStatusAccount(item),
+          item.twitter_id,
+          item.profile.screen_name,
+          this.getStatusAccount(item.profile),
           moment(item.created_at).format('MMM DD YYYY, h:mm:ss'),
           moment(item.updated_at).fromNow(),
           "<button class='btn btn-sm btn-primary'>Detail</button>",
@@ -84,8 +84,8 @@ class Account extends Twitter {
           try {
             const credential = await this.verifyCredentials({ token: data[i].token, tokenSecret: data[i].tokenSecret });
             const credentialParse = JSON.parse(credential);
-            credentialParse.updated_at = Date();
-            credentials = { credentials, ...credentialParse };
+            let curentAccount = {twitter_id: credentialParse.id_str, profile: { ...credentialParse }, token: data[i].token, tokenSecret: data[i].tokenSecret, updated_at: Date()};
+            credentials = { credentials, ...curentAccount };
           } catch (err) {
             throw err;
           }

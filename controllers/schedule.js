@@ -117,9 +117,11 @@ module.exports = {
   },
 
   getCategory(categories) { //eslint-disable-line
+    let result = '';
     for (let i = 0; i < categories.length; i += 1) {
-      return `<span class="badge badge-secondary">${categories[i].name}</span>`;
+      result += `<span class="badge badge-secondary">${categories[i].name}</span>&nbsp;`;
     }
+    return result;
   },
   index() {
     return async (req, res) => {
@@ -141,16 +143,21 @@ module.exports = {
   update(jx = false) {
     return async (req, res) => {
       const errors = validationResult(req);
-      if (!errors.isEmpty() && jx === true) {
+      if (!errors.isEmpty()) {
         return res.status(422).json({ errors: errors.array() });
       }
-      const { account, type, categoryId } = req.body;
+      const {
+        account, categoryId, name, scheduleId,
+      } = req.body;
       try {
         await ModelSchedule.updateSchedule({
+          scheduleId,
+          name,
           account,
           categoryId,
-          type,
+          type: ['post'],
         });
+        res.json(200);
       } catch (e) {
         throw (e);
       }

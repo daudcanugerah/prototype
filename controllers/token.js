@@ -25,7 +25,7 @@ class Token extends Twitter {
         const dataUser = JSON.parse(data);
         const { token, tokenSecret } = userToken;
         await maccount.setCredential({
-          ...dataUser, token, tokenSecret, created_at: Date(), updated_at: Date(),
+          twitter_id: dataUser.id_str, profile: { ...dataUser }, token, tokenSecret, created_at: Date(), updated_at: Date(),
         });
         res.render('account/response', { message: 'success' });
       } catch (err) {

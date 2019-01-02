@@ -6,6 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Protorype</title>
     <%- include("../partials/css.min.ejs")   -%>
+    <script>
+        var category;
+        var countAccount = 0;
+        var countArray = 0;
+    </script>
 </head>
 
 <body>
@@ -172,7 +177,8 @@
                             elem : '<h4>Delete Success</h4>',
                             title : 'Info'
                         });         
-                            DT.ajax.reload()                   
+                        reloadCron();
+                        DT.ajax.reload()                   
                         },
                         error : function(data){
                         setModalInfo({                        
@@ -184,6 +190,45 @@
                 }
             });          
         }
+
+        // set category item
+    $.ajax({
+        url: '/app/category/getCategoryJX',
+        type: 'GET',
+        processData: false,
+        contentType: false,
+        success: function (data) {
+            category = data;
+            // set category option
+            let options = [];
+            category.forEach(item=> {
+                var newOption = new Option(`${item.name} - ${item.countArray}`, item._id, false, false);
+                $('.js-example-basic-multiple.option-add').append(newOption).trigger('change');
+            });
+        },
+    });
+
+    $.ajax({
+        url: '/app/account/getCountJX',
+        type: 'GET',
+        processData: false,
+        contentType: false,
+        success: function (data) {
+            countAccount = data;
+            $('input[type="range"]').attr('max', data);
+            $('input[type="range"]').attr('value', 0);
+            $('.range-param').html(0 + "/" + countAccount);
+        },
+    });
+
+    $('input[type="range"]').on('input change', function () {
+        $('.range-param').html($(this).val() + "/" + countAccount);
+    });
+
+    $(document).on("change", "input#category-checkbox", function () {
+        let num = Number($(this).attr('data-id'));
+        countArray += this.checked ? num : (num * (-1));
+    });
     </script>
 </body>
 
