@@ -8,4 +8,5 @@ module.exports = {
   category: require('./category'),
   schedule: require('./schedule'),
   auth: require('./auth'),
+  media: require('./media'),
 };

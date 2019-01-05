@@ -17,7 +17,8 @@
                         </div>
                         <div class="form-group col-md-3">
                             <label>&nbsp;</label>
-                            <button type="button" data-target="#modal-category-add" data-toggle="modal" class="btn btn-primary form-control">Add Category</button>
+                            <button type="button" data-target="#modal-category-add" data-toggle="modal" class="btn btn-primary form-control">Add
+                                Category</button>
                         </div>
                     </div>
                     <div class="form-group">
@@ -32,8 +33,14 @@
                     </div>
                     <div class="form-group">
                         <div class="form-group">
-                            <label for="exampleFormControlFile1">Attachment</label>
-                            <input type="file" name="file" class="form-control-file" id="exampleFormControlFile1">
+                            <label for="exampleFormControlFile1">Image max(4)</label>
+                            <div id="fileuploader" class="form-control-file image-upload">Upload</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-group">
+                            <label for="exampleFormControlFile1">Gif / Video max(1)</label>
+                            <input type="file" name="file" class="form-control-file gif-Video-upload">
                         </div>
                     </div>
             </div>
@@ -45,3 +52,88 @@
         </div>
     </div>
 </div>
+
+<script>
+    $(".image-upload").uploadFile({
+        url: "/app/media/upload",
+        fileName: "media",
+        acceptFiles: "image/*",
+        showPreview: true,
+        previewHeight: "100px",
+        previewWidth: "100px",
+        maxFileCount: 4,
+        showDelete: true,
+        deleteCallback: function (data, pd) {
+            pd.statusbar.remove();
+        },
+        onSubmit:function(files)
+        {
+            // debugger;;
+        }
+    });
+
+
+    // $("#formdata").submit(function (e) {
+    //     e.preventDefault();
+    //     var formData = new FormData($(this)[0]);
+    //     $.ajax({
+    //         url: '/app/post/addJX',
+    //         type: 'POST',
+    //         data: formData,
+    //         processData: false,
+    //         contentType: false,
+    //         success: function (data) {
+    //             $('#exampleModal').modal('toggle');
+    //             $('#formdata')[0].reset();
+    //             $(".progress-bar").css('width', `0%`).html(`0%`)
+    //         },
+    //         error: function (data) {
+    //             var data = data.responseJSON;
+    //             console.log(data)
+    //             // let elem = "<ul>";
+    //             // data.forEach(item => {
+    //             //     elem += `<li>${item.param} - ${item.msg}</li>`
+    //             // });
+    //             // elem += "</ul>";
+    //             // $('#modal-info').modal('toggle');
+    //             // $('#modal-info').find('.modal-body').html(elem);
+    //             // $('#modal-info').find('.modal-title').text("Info");
+    //         },
+    //     });
+
+    //     return true;
+    // });
+
+    $("#form-modal-addcategory").submit(function (e) {
+        e.preventDefault();
+        $.ajax({
+            url: '/app/category/addJX',
+            type: 'POST',
+            data: $(this).serializeArray(),
+            success: function (data) {
+                $('#modal-category-add').modal('toggle');
+                $('#form-modal-addcategory')[0].reset();
+                setCategory();
+            },
+        });
+
+        return true;
+    });
+
+    function setCategory() {
+        $("select#category").html("");
+        $.ajax({
+            url: '/app/category/getCategoryJX',
+            type: 'GET',
+            success: function (data) {
+                let option = "";
+                data.forEach(item => {
+                    option += `<option value="${item._id}">${item.name}</option>`;
+                });
+                $("select#category").append(option);
+            },
+        });
+    }
+    setCategory();
+
+</script>
