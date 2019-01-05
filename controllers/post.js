@@ -73,7 +73,7 @@ class Post {
     };
   }
 
-  addPostJX() {
+  add() {
     return async (req, res) => {
       // // let form = upload();
       // req.body.tweet = "daud anugerah";

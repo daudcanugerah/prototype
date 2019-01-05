@@ -1,6 +1,7 @@
 /* eslint-disable */
 
 const multer = require('multer');
+const path = require('path');
 
 const isset = function isset(v) {
   if (typeof v !== 'undefined' && v !== null) {
@@ -10,15 +11,13 @@ const isset = function isset(v) {
 };
 
 const upload = function (args) {
-  const upload = multer({ dest: 'public/uploads', ...args });
+  const upload = multer({ dest: 'public/uploads'});
   return upload;
 };
 
 
 const imageFilter = function (req, file, cb) {
-  if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
-    return cb(Promise.reject('error'), false);
-  }
+  console.log(file,req);
 };
 
 

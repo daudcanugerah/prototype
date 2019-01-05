@@ -14,10 +14,14 @@ const connect = async () => {
       throw err;
     }
   } catch (err) {
-    console.log(`Db Error ${  err}`);
+    console.log(`Db Error ${err}`);
   }
 };
 
 const getDb = () => _db;
 
-module.exports = { connect, getDb };
+const closeConnection = () => {
+  _db = null;
+};
+
+module.exports = { connect, getDb, closeConnection };

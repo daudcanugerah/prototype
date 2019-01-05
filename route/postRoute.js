@@ -8,6 +8,6 @@ const app = express.Router();
  */
 app.get('/getPostDTL', post.getPostDTLS());
 app.get('/', post.index());
-app.post('/addJX', post.addPostJX());
+app.post('/add', post.add());
 
 module.exports = app;
