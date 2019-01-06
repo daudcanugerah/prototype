@@ -19,19 +19,19 @@ app.get('/', schedule.index());
 app.get('/reload', async (req, res) => {
   try {
     await reloadCron();
-    res.sendStatus(200).json('OK');
+    res.json('OK');
   } catch (err) {
     throw err;
   }
 });
 app.get('/start/:id*?', (req, res) => {
   const response = isset(req.params.id) ? startCron(req.params.id) : startCron();
-  res.sendStatus(200).json(response);
+  res.json(response);
 });
 
 app.get('/stop/:id*?', (req, res) => {
   const response = isset(req.params.id) ? stopCron(req.params.id) : stopCron();
-  res.sendStatus(200).json(response);
+  res.json(response);
 });
 
 module.exports = app;

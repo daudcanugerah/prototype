@@ -20,11 +20,125 @@
             <div class="container-fluid dashboard-content">
                 <div class="row">
                     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                        <div class="card">
-                            <h5 class="card-header">Basic Table</h5>
-                            <div class="card-body">
+                        <%- include('../partials/subHeader.ejs',{name:'Dashboard'}) -%>
+                        <div class="row">
+                            <!-- ============================================================== -->
+                            <!-- four widgets   -->
+                            <!-- ============================================================== -->
+                            <!-- ============================================================== -->
+                            <!-- total views   -->
+                            <!-- ============================================================== -->
+                            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="d-inline-block">
+                                            <h5 class="text-muted">Total Account</h5>
+                                            <h2 class="mb-0"> 10,28,056</h2>
+                                        </div>
+                                        <div class="float-right icon-circle-medium  icon-box-lg  bg-info-light mt-1">
+                                            <i class="fa fa-user fa-fw fa-sm text-info"></i>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
+                            <!-- ============================================================== -->
+                            <!-- end total views   -->
+                            <!-- ============================================================== -->
+                            <!-- ============================================================== -->
+                            <!-- total followers   -->
+                            <!-- ============================================================== -->
+                            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="d-inline-block">
+                                            <h5 class="text-muted">Total Post</h5>
+                                            <h2 class="mb-0"> 24,763</h2>
+                                        </div>
+                                        <div class="float-right icon-circle-medium  icon-box-lg  bg-primary-light mt-1">
+                                            <i class="fa fa-file fa-fw fa-sm text-primary"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- ============================================================== -->
+                            <!-- end total followers   -->
+                            <!-- ============================================================== -->
+                            <!-- ============================================================== -->
+                            <!-- partnerships   -->
+                            <!-- ============================================================== -->
+                            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="d-inline-block">
+                                            <h5 class="text-muted">Kategori</h5>
+                                            <h2 class="mb-0">14</h2>
+                                        </div>
+                                        <div class="float-right icon-circle-medium  icon-box-lg  bg-secondary-light mt-1">
+                                            <i class="fa fa-folder fa-fw fa-sm text-secondary"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- ============================================================== -->
+                            <!-- end partnerships   -->
+                            <!-- ============================================================== -->
+                            <!-- ============================================================== -->
+                            <!-- total earned   -->
+                            <!-- ============================================================== -->
+                            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="d-inline-block">
+                                            <h5 class="text-muted">Schedule</h5>
+                                            <h2 class="mb-0"> $149.00</h2>
+                                        </div>
+                                        <div class="float-right icon-circle-medium  icon-box-lg  bg-brand-light mt-1">
+                                            <i class="fa fa-cogs fa-fw fa-sm text-brand"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- ============================================================== -->
+                            <!-- end total earned   -->
+                            <!-- ============================================================== -->
                         </div>
+                        <!-- Chart Schedule -->
+                        <div class="row">
+                                <div class="col-xl-8 col-lg-12 col-md-8 col-sm-12 col-12">
+                                    <div class="card">
+                                        <h5 class="card-header">Grafik History Schedule</h5>
+                                        <div class="card-body"><div class="chartjs-size-monitor" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;"><div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div></div><div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:200%;height:200%;left:0; top:0"></div></div></div>
+                                            <canvas id="chartjs_line" width="307" height="115" style="display: block; width: 307px; height: 115px;" class="chartjs-render-monitor"></canvas>
+                                        </div>
+                                        <div class="card-body border-top">
+                                            <div class="row">
+                                                <div class="offset-xl-1 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12 p-3">
+                                                    <h4> Today's Earning: $2,800.30</h4>
+                                                    <p>Suspendisse potenti. Done csit amet rutrum.
+                                                    </p>
+                                                </div>
+                                                <div class="offset-xl-1 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 p-3">
+                                                    <h2 class="font-weight-normal mb-3"><span>$48,325</span>                                                    </h2>
+                                                    <div class="mb-0 mt-3 legend-item">
+                                                        <span class="fa-xs text-primary mr-1 legend-title "><i class="fa fa-fw fa-square-full"></i></span>
+                                                        <span class="legend-text">Current Week</span></div>
+                                                </div>
+                                                <div class="offset-xl-1 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 p-3">
+                                                    <h2 class="font-weight-normal mb-3">
+            
+                                                                    <span>$59,567</span>
+                                                                </h2>
+                                                    <div class="text-muted mb-0 mt-3 legend-item"> <span class="fa-xs text-secondary mr-1 legend-title"><i class="fa fa-fw fa-square-full"></i></span><span class="legend-text">Previous Week</span></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- ============================================================== -->
+                                <!-- end reveune  -->
+                                <!-- ============================================================== -->
+                                <!-- ============================================================== -->
+                            </div>
                     </div>
                 </div>
             </div>
@@ -34,6 +148,8 @@
         </div>
     </div>
     <%- include("../partials/js.min.ejs")   -%>
+    <script src="/public/vendor/charts/charts-bundle/Chart.bundle.js"></script>
+    <script src="/public/vendor/charts/charts-bundle/chartjs.js"></script>
 </body>
 
 </html>

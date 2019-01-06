@@ -37,7 +37,7 @@ class EngineTwitter extends TwitterModel {
     this.account = account;
   }
 
-  generateSchedule({ type, ...data }) {
+  async generateSchedule({ type, ...data }) {
     switch (type) {
       case 'post':
         this.runPost(data);
@@ -61,7 +61,7 @@ class EngineTwitter extends TwitterModel {
       } = await this.updateStatus({ status: post[0].content, token, tokenSecret });
       // Create Log Post
       console.log(`log info. status Post ${code === 200}`);
-      ScheduleModel.createLogPost({
+      await ScheduleModel.createLogPost({
         logId: this.log.ops[0]._id.toString(),
         postId: post[0]._id.toString(),
         accountId: _id.toString(),
