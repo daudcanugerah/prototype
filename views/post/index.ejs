@@ -52,7 +52,7 @@
     </div>
     <%- include("../partials/js.min.ejs")   -%>
     <!-- custom library -->
-    <script src="http://hayageek.github.io/jQuery-Upload-File/4.0.11/jquery.uploadfile.min.js"></script>
+    <script src="/public/js/custon-jquery-upload.js"></script>
     <!-- End -->
     <%- include("./m-add")   -%>
     <%- include("./../category/m-add")   -%>
@@ -87,7 +87,6 @@
         table.button('addPost:name').nodes().attr('data-target', '#exampleModal').attr('data-toggle', 'modal');
         // set progress content
         $('textarea').on('keyup blur', function () {
-
             var val = $(this).val();
             $(".progress-bar").css('width', `${(100 / 100) * val.length}%`).html(`${(100 / 100) * val.length}%`)
 
