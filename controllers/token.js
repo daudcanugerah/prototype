@@ -30,7 +30,6 @@ class Token extends Twitter {
         res.render('account/response', { message: 'success' });
       } catch (err) {
         const error = err;
-        throw err;
         res.render('account/response', { message: error });
       }
     };

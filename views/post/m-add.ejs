@@ -17,12 +17,13 @@
                         </div>
                         <div class="form-group col-md-3">
                             <label>&nbsp;</label>
-                            <button type="button" data-target="#modal-category-add" data-toggle="modal" class="btn btn-primary form-control">Add Category</button>
+                            <button type="button" data-target="#modal-category-add" data-toggle="modal" class="btn btn-primary form-control">Add
+                                Category</button>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label>Tweets</label>
-                        <textarea class="form-control" name="tweet" rows="3"></textarea>
+                        <label>Contents</label>
+                        <textarea class="form-control" name="content" rows="3"></textarea>
                     </div>
                     <div class="progress">
                         <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0"
@@ -30,11 +31,13 @@
                     </div>
                     <div class="form-group">
                     </div>
-                    <div class="form-group">
-                        <div class="form-group">
-                            <label for="exampleFormControlFile1">Attachment</label>
-                            <input type="file" name="file" class="form-control-file" id="exampleFormControlFile1">
-                        </div>
+                    <div class="form-group image-group">
+                            <label for="exampleFormControlFile1">Image max(4)</label>
+                            <div id="fileuploader" class="form-control-file image-upload">Upload Image</div>
+                    </div>
+                    <div class="form-group gif-video-group">
+                            <label for="exampleFormControlFile1">Gif / Video max(1)</label>
+                            <div class="form-control-file gif-video-upload">Upload</div>
                     </div>
             </div>
             <div class="modal-footer">
@@ -45,3 +48,151 @@
         </div>
     </div>
 </div>
+
+<script>
+    let imageUpload = $(".image-upload").uploadFile({
+        url: "/app/media/upload",
+        fileName: "media",
+        acceptFiles: "image/jpg,image/jpeg,image/webp,image/png",
+        showPreview: true,
+        previewHeight: "100px",
+        previewWidth: "100px",
+        maxFileCount: 4,
+        showDelete: true,
+        deleteCallback: function (data, pd) {
+            if($(".form-group.image-group>.ajax-file-upload-container>.ajax-file-upload-statusbar>img").length == 0){
+                $('.gif-video-upload>div>div>form>input').removeAttr('disabled');
+            }
+            pd.statusbar.remove();
+        },
+        onError: function (files, status, errMsg, pd) {
+            setTimeout(()=>{
+                pd.statusbar.remove();
+            },3000)
+        },
+        onSuccess:function(files,data,xhr,pd)
+        {
+            pd.statusbar.append(`<input type="hidden" name="media[]" value="${data.id}"/>`)
+        },
+        onSelect:function(files){
+            if(/(jpg|jpeg|webp|png)/.test(files[0].name.split('.')[0])){
+                $('.image-upload>div').append('file type not allowed');
+                return false;
+            }
+            document.querySelector('.gif-video-upload>div.ajax-upload-dragdrop>div.ajax-file-upload>form>input').setAttribute('disabled',true);
+            return true;
+        }
+    });
+    let gifVideoUpload = $(".gif-video-upload").uploadFile({
+        url: "/app/media/upload",
+        fileName: "media",
+        acceptFiles: "video/mp4,image/gif,video/mov",
+        showPreview: true,
+        previewHeight: "100px",
+        previewWidth: "100px",
+        maxFileCount: 1,
+        showDelete: true,
+        deleteCallback: function (data, pd) {
+            pd.statusbar.remove();
+            if($(".form-group.gif-video-group>.ajax-file-upload-container>.ajax-file-upload-statusbar>img").length == 0){
+                $('.image-upload>div>div>form>input').removeAttr('disabled');
+            }
+
+        },
+        onError: function (files, status, errMsg, pd) {
+            setTimeout(()=>{
+                pd.statusbar.remove();
+            },3000)
+        },
+        onSuccess:function(files,data,xhr,pd)
+        {
+            pd.statusbar.append(`<input type="hidden" name="media[]" value="${files[0]}"/>`)
+        },
+        onSelect:function(files){
+            debugger;;
+            if(/(mp4|mov|gif)/.test(files[0].name.split('.')[0])){
+                $('.gif-video-upload>div').append('file type not allowed');
+                return false;
+            }
+            document.querySelector('.image-upload>div.ajax-upload-dragdrop>div.ajax-file-upload>form>input').setAttribute('disabled',true)                
+            return true;
+        }
+    });
+
+        $("#exampleModal").on("hidden.bs.modal", function () {
+             debugger;;
+             imageUpload.reset();
+             gifVideoUpload.reset();
+        });
+
+        // set progress content
+        $('textarea').on('keyup blur', function () {
+            var val = $(this).val();
+            $(".progress-bar").css('width', `${(100 / 280) * val.length}%`).html(`${((100/280)*val.length).toFixed(2)}%`)
+
+            if (val.length > 280) {
+                $(this).val(val.slice(0, 280));
+            }
+        });
+
+    $("#formdata").submit(function (e) {
+        e.preventDefault();
+        $.ajax({
+            url: '/app/post/add',
+            type: 'POST',
+            data: $(this).serializeArray(),
+            success: function (data) {
+                $('#exampleModal').modal('toggle');
+                $('#formdata')[0].reset();
+                $(".progress-bar").css('width', `0%`).html(`0%`)
+            },
+            error: function (data) {
+                // var data = data.responseJSON;
+                // console.log(data)
+                // let elem = "<ul>";
+                // data.forEach(item => {
+                //     elem += `<li>${item.param} - ${item.msg}</li>`
+                // });
+                // elem += "</ul>";
+                // $('#modal-info').modal('toggle');
+                // $('#modal-info').find('.modal-body').html(elem);
+                // $('#modal-info').find('.modal-title').text("Info");
+            },
+        });
+
+        return true;
+    });
+
+    $("#form-modal-addcategory").submit(function (e) {
+        e.preventDefault();
+        $.ajax({
+            url: '/app/category/addJX',
+            type: 'POST',
+            data: $(this).serializeArray(),
+            success: function (data) {
+                $('#modal-category-add').modal('toggle');
+                $('#form-modal-addcategory')[0].reset();
+                setCategory();
+            },
+        });
+
+        return true;
+    });
+
+    function setCategory() {
+        $("select#category").html("");
+        $.ajax({
+            url: '/app/category/getCategoryJX',
+            type: 'GET',
+            success: function (data) {
+                let option = "";
+                data.forEach(item => {
+                    option += `<option value="${item._id}">${item.name}</option>`;
+                });
+                $("select#category").append(option);
+            },
+        });
+    }
+    setCategory();
+
+</script>

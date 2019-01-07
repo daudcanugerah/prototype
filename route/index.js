@@ -5,4 +5,5 @@ module.exports = {
   schedule: require('./scheduleRoute'),
   token: require('./tokenRoute'),
   dashboard: require('./dashboardRoute'),
+  media: require('./mediaRoute'),
 };

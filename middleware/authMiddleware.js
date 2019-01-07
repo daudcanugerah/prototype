@@ -20,7 +20,7 @@ class AuthMiddleware {
       } else if (!isset(req.session.isLogin) && !allowAuth) {
         next();
       } else {
-        res.redirect(redirectTo || '/');
+        res.redirect(redirectTo || '/app/dashboard');
       }
     };
   }

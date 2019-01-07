@@ -1,5 +1,6 @@
 const moment = require('moment');
 const model = require('./../model/model').getInstance();
+const { validationResult } = require('express-validator/check');
 
 class Post {
   /**
@@ -73,28 +74,13 @@ class Post {
     };
   }
 
-  addPostJX() {
+  add() {
     return async (req, res) => {
-      // // let form = upload();
-      // req.body.tweet = "daud anugerah";
-      // req.check('tweet').not().isEmpty().withMessage("Tweets tidak boleh kosong");
-      // // form.on('fileBegin', function (name, file) {
-      // //     var fileType = file.type.split('/').pop();
-      // //     file.path = form.uploadDir + "/" + Date.now() + '.' + fileType;
-      // //     req.body.fileType = fileType;
-      // // });
-      // // req.checkBody('fileType').custom(v => {
-      // //     if ((/\.(gif|jpg|jpeg|tiff|png)$/i).test(v)) throw new Error;
-      // // }).withMessage("Error pisan");
-
-      // const errors = validationResult(req);
-      // if (!errors.isEmpty()) {
-      //     console.log(errors.array());
-      //     console.log(req.body);
-      //     return res.status(422).json({ errors: errors.array() });
-      // // }
-      // console.log(req.local);
-      res.send({ body: req.body, file: req.file });
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.array() });
+      }
+      // updateMedia();
     };
   }
 }

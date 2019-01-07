@@ -30,6 +30,45 @@ class PostModel extends Model {
       throw err;
     }
   }
+
+  async add({ content, categoryId, media = null }) {
+    try {
+      const requestQuery = await this.insertOne({
+        collection: 'post',
+        args: [
+          {
+            content,
+            $push: { media },
+            category_id: categoryId,
+          },
+        ],
+      });
+      return requestQuery.toArray();
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async update({
+    postId, content, categoryId, media = null,
+  }) {
+    try {
+      const requestQuery = await this.updateOne({
+        collection: 'post',
+        args: [
+          { _id: postId },
+          {
+            content,
+            $push: { media },
+            category_id: categoryId,
+          },
+        ],
+      });
+      return requestQuery.toArray();
+    } catch (err) {
+      throw err;
+    }
+  }
 }
 
 module.exports = PostModel;

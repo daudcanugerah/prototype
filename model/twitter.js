@@ -1,4 +1,6 @@
 const request = require('request');
+const fs = require('fs');
+const qs = require('query-string');
 const Oauth = require('./../libs/oauth');
 
 class Twitter extends Oauth {
@@ -52,13 +54,43 @@ class Twitter extends Oauth {
       token,
       token_secret: tokenSecret,
     };
+    const url = `https://api.twitter.com/1.1/statuses/update.json?status=${encodeURIComponent(status)}`;
     return new Promise(async (resolve, reject) => {
       try {
-        request.post({ url: `https://api.twitter.com/1.1/statuses/update.json?status=${status}`, oauth },
+        request.post({ url, oauth },
           (e, r, body) => {
             if (e) {
               reject(e);
-            } else if (r.statusCode != 200) {
+            } else if (r.statusCode !== 200) {
+              const result = JSON.parse(body).errors[0];
+              resolve(result);
+            }
+            console.log(body);
+            const result = JSON.parse(body);
+            resolve(result);
+          });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  }
+
+  async uploadMedia({ media, token, tokenSecret }) {
+    const oauth = {
+      ...this.paramOauth,
+      token,
+      token_secret: tokenSecret,
+    };
+    const formData = {
+      media: fs.createReadStream(media.path),
+    };
+    return new Promise(async (resolve, reject) => {
+      try {
+        request.post({ url: 'https://upload.twitter.com/1.1/media/upload.json', oauth, formData },
+          (e, r, body) => {
+            if (e) {
+              reject(e);
+            } else if (r.statusCode !== 200) {
               const result = JSON.parse(body).errors[0];
               resolve(result);
             }

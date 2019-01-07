@@ -1,4 +1,7 @@
+/* eslint-disable */
+
 const multer = require('multer');
+const path = require('path');
 
 const isset = function isset(v) {
   if (typeof v !== 'undefined' && v !== null) {
@@ -8,15 +11,13 @@ const isset = function isset(v) {
 };
 
 const upload = function (args) {
-  const upload = multer({ dest: 'public/uploads', ...args });
+  const upload = multer({ dest: 'public/uploads'});
   return upload;
 };
 
 
 const imageFilter = function (req, file, cb) {
-  if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
-    return cb(Promise.reject('error'), false);
-  }
+  console.log(file,req);
 };
 
 
@@ -39,6 +40,7 @@ const extractForm = function (data) {
   return newa;
 };
 
+/* eslint-disable */
 const converToCron = function (data, name) {
   if (isset(data[name])) {
     let result = '';
@@ -75,27 +77,6 @@ const getCronFormat = (data, layout = ['minute', 'hour', 'dayOfMonth', 'month', 
   return result.trimRight();
 };
 
-const mix = function (...mixins) {
-  class Mix { }
-
-  // Programmatically add all the methods and accessors
-  // of the mixins to class Mix.
-  for (const mixin of mixins) {
-    copyProperties(Mix, mixin);
-    copyProperties(Mix.prototype, mixin.prototype);
-  }
-
-  return Mix;
-};
-
-function copyProperties(target, source) {
-  for (const key of Reflect.ownKeys(source)) {
-    if (key !== 'constructor' && key !== 'prototype' && key !== 'name') {
-      const desc = Object.getOwnPropertyDescriptor(source, key);
-      Object.defineProperty(target, key, desc);
-    }
-  }
-}
 module.exports = {
-  isset, upload, imageFilter, extractForm, getCronFormat, converToCron, mix,
+  isset, upload, imageFilter, extractForm, getCronFormat, converToCron,
 };

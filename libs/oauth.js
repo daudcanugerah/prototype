@@ -66,8 +66,7 @@ class Oauth {
   async getOAuthAccessToken(token) {
     const { callbackToken, requestTokenSecret, callbackTokenVerifier } = token;
     let oauth = {
-        consumer_key: "0wN7qQs43aeAWBVP0Za7xzLOD",
-        consumer_secret: "LECLHsBOjJ8uiAWRu65GC0RnlHpe8z4dEfrFqEohPMq7HHckHe",
+        ...this.paramOauth,
         token: callbackToken,
         token_secret: requestTokenSecret,
         verifier: callbackTokenVerifier,
