@@ -1,5 +1,6 @@
 const express = require('express');
 const { post } = require('./../controllers/index');
+const { postValidator } = require('./../validator/index');
 
 const app = express.Router();
 
@@ -8,6 +9,6 @@ const app = express.Router();
  */
 app.get('/getPostDTL', post.getPostDTLS());
 app.get('/', post.index());
-app.post('/add', post.add());
+app.post('/add', postValidator.add(), post.add());
 
 module.exports = app;

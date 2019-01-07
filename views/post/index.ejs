@@ -85,15 +85,6 @@
             ]
         });
         table.button('addPost:name').nodes().attr('data-target', '#exampleModal').attr('data-toggle', 'modal');
-        // set progress content
-        $('textarea').on('keyup blur', function () {
-            var val = $(this).val();
-            $(".progress-bar").css('width', `${(100 / 100) * val.length}%`).html(`${(100 / 100) * val.length}%`)
-
-            if (val.length > 100) {
-                $(this).val(val.slice(0, 100));
-            }
-        });
     </script>
 </body>
 

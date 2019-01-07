@@ -7,11 +7,7 @@ class Media {
       // check validation error by express-validator
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        const errorFormatter = ({
-          location, msg, param, value, nestedErrors,
-        }) => `${msg}`;
-        const result = validationResult(req).formatWith(errorFormatter);
-        return res.status(422).json({ 'jquery-upload-file-error': result.array()[0] });
+        return res.status(422).json({ errors: errors.array() });
       }
       // check file upload
       const { files } = req;

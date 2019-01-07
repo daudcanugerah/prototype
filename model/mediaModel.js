@@ -35,6 +35,29 @@ class MediaModel extends Model {
   }
 
   /**
+   * @method getMedia()
+   * @param Object mediaId
+   * @desc mengambil media
+   * @return Promises
+   */
+
+  async getMedia({ mediaId = null }) {
+    const param = mediaId ? { _id: mediaId } : {};
+    try {
+      const request = await this.findOne({
+        collection: 'media',
+        args: [
+          {
+            ...param,
+          }],
+      });
+      return request;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  /**
    * @method updateMediaChanel()
    * @param String mediaId
    * @param Object detailChanel
