@@ -19,7 +19,7 @@ class Oauth {
    */
   async getOAuthRequestToken() {
     let oauth = {
-        callback: 'http://127.0.0.1:3000/app/token/cb_twitter',
+        callback: process.env.APP_CALLBACK,
         ...this.paramOauth
     },url = 'https://api.twitter.com/oauth/request_token';
     return new Promise((resolve,reject)=>{

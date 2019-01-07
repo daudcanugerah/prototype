@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "pm2-runtime start ecosystem.config.js --env production",
+    "start": "node server.js",
     "devstart": "nodemon NODE_ENV=development server.js"
   },
   "dependencies": {
