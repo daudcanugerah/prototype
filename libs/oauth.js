@@ -29,6 +29,7 @@ class Oauth {
                     reject(e);
                 }
                 let {oauth_token,oauth_token_secret} = qs.parse(body);
+                console.log(body);
                 resolve({
                     requestToken : oauth_token,
                     requestTokenSecret : oauth_token_secret
