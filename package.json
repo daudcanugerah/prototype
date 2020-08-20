@@ -4,7 +4,7 @@
     "devstart": "nodemon NODE_ENV=development server.js"
   },
   "dependencies": {
-    "bcrypt": "^3.0.2",
+    "bcrypt": "^5.0.0",
     "body-parser": "^1.18.3",
     "cron": "^1.6.0",
     "cronstrue": "^1.58.0",
